@@ -1,0 +1,3 @@
+Pour le programme il sera defini
+
+- Une classe Server, un classe Chanell et une classe User
