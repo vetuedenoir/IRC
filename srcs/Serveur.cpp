@@ -1,64 +1,25 @@
 #include "Serveur.hpp"
 
-Serveur::Serveur() {};
 
-Serveur::Serveur(const Serveur &copie) {(void)copie;}
+//Creer la socket utilisant le protocol AF_INET(internet ipv4) de type stream (TCP/IP)
+//on lui ajoute ensuite l option SO_REUSEADDR qui lui permet de reutiliser une adreese local
 
-Serveur& Serveur::operator= (const Serveur &model) {(void)model; return *this;}
-
-std::string init_passw(const std::string &pass)
+void	Serveur::create_socket()
 {
-	bool	requirement[3] = {0};
-
-	if (pass.size() < 6)
-		throw "Erreur MDP: trop court, minimum 6 caracteres";
-	if (pass.size() > 24)
-		throw "Erreur MDP: trop long, maximum 26 caracteres";
-	char	c;
-	for (int i = 0; i < pass.size(); i++)
+	socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+	if (socket_fd == -1)
+		throw std::runtime_error("Error: Cannot creat socket");
+	int opt = 1;
+	if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
 	{
-		c = pass[i];
-		if (isdigit(c))
-			requirement[0] = true;
-		if (isalpha(c))
-			requirement[1] = true;
-		if (isupper(c))
-			requirement[2] = true;
-		if (!isalnum(c))
-			throw "Erreur MDP: uniquement des caracteres alphanumerique accepter";
+		close(socket_fd);
+		throw std::runtime_error("Error: Cannot set socket");
 	}
-	if (!requirement[0] || !requirement[1] || !requirement[2])
-		throw "Erreur MDP: doit comporter au moins une majuscule, une minuscule et un chiffre";
-	return (pass);
 }
 
-int	init_port(const std::string &strport)
+Serveur::Serveur(const int &port_, const std::string &password_) : port(port_), password(password_)
 {
-	char	*endptr= NULL;
-	int		port = 0;
-
-	if (strport.size() > 5)
-		throw "Erreur: port inexistant";
-	port = (int)strtod(strport.c_str(), &endptr);
-	if (port <= 0)
-		throw "Erreur: port inexistant";
-	if (endptr != &strport[strport.length()])
-		throw "Erreur: port inexistant";
-	return port;
-}
-
-Serveur::Serveur(const std::string &port_, const std::string &password_)
-{
-	try
-	{
-		password = init_passw(password_);
-		port = init_port(port_)
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-	}
-	
+	create_socket();
 }
 
 Serveur::~Serveur()

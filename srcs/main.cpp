@@ -1,4 +1,47 @@
 #include "irc.hpp"
+#include "Serveur.hpp"
+#include <cerrno>
+
+
+void init_passw(const std::string &pass)
+{
+	bool	requirement[3] = {0};
+
+	if (pass.size() < 6)
+		throw "Erreur MDP: trop court, minimum 6 caracteres";
+	if (pass.size() > 24)
+		throw "Erreur MDP: trop long, maximum 26 caracteres";
+	char	c;
+	for (size_t i = 0; i < pass.size(); i++)
+	{
+		c = pass[i];
+		if (isdigit(c))
+			requirement[0] = true;
+		if (isalpha(c))
+			requirement[1] = true;
+		if (isupper(c))
+			requirement[2] = true;
+		if (!isalnum(c))
+			throw "Erreur MDP: uniquement des caracteres alphanumerique accepter";
+	}
+	if (!requirement[0] || !requirement[1] || !requirement[2])
+		throw "Erreur MDP: doit comporter au moins une majuscule, une minuscule et un chiffre";
+}
+
+int	init_port(const std::string &strport)
+{
+	char	*endptr= NULL;
+	int		port = 0;
+
+	if (strport.size() > 5)
+		throw "Erreur: port inexistant";
+	port = std::strtol(strport.c_str(), &endptr, 10);
+	if (port < 0 || port > 65535)
+		throw "Erreur: port inexistant";
+	if (endptr != &strport[strport.length()])
+		throw "Erreur: port inexistant";
+	return (port);
+}
 
 int	main(int ac, char **av)
 {
@@ -7,13 +50,20 @@ int	main(int ac, char **av)
 		std::cerr << "Error: Utilisation: ircserv <port <password>" << std::endl;
 		return (1);
 	}
+	errno = 0;
 	try
 	{
-		Serveur	serveur(av[1], av[2]);
+		init_passw(av[2]);	
+		Serveur serveur(init_port(av[1]), av[2]);
 	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
+	catch(const std::exception& e) {
+		std::cerr << e.what();
+		if (errno != 0)
+			std::cerr << ": " <<  std::strerror(errno);
+		std::cerr<< std::endl;
+	}
+	catch(const char * e) {
+		std::cerr << e << '\n';
 	}
 	
 	

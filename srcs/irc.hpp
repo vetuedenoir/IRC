@@ -2,6 +2,8 @@
 # define IRC_HPP
 
 #include <iostream>
+#include <cstdlib>
+#include <cstring>
 
 
 #endif
