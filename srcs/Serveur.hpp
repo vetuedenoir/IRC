@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+
 #include <string>
 #include <cstring>
 #include <iostream>
@@ -17,7 +18,7 @@ class Serveur
 {
  private:
 
-	int					_port;
+	uint16_t			_port;
 	std::string			_password;
 	int					_socket_fd;
 	struct sockaddr_in	_sock_addr;
@@ -33,6 +34,7 @@ class Serveur
  public:
 	Serveur(const int &port, const std::string &password_);
 	~Serveur();
+	void	run_serveur();
 };
 
 #endif

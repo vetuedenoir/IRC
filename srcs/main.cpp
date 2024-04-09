@@ -3,6 +3,15 @@
 #include <cerrno>
 
 
+bool	g_run = 1;
+
+
+void	sigint_handler(int signo)
+{
+	(void)signo;
+	g_run = 0;
+}
+
 void init_passw(const std::string &pass)
 {
 	bool	requirement[3] = {0};
@@ -28,7 +37,7 @@ void init_passw(const std::string &pass)
 		throw "Erreur MDP: doit comporter au moins une majuscule, une minuscule et un chiffre";
 }
 
-int	init_port(const std::string &strport)
+uint16_t	init_port(const std::string &strport)
 {
 	char	*endptr= NULL;
 	int		port = 0;
@@ -51,6 +60,7 @@ int	main(int ac, char **av)
 		return (1);
 	}
 	errno = 0;
+	std::signal(SIGINT, &sigint_handler);
 	try
 	{
 		init_passw(av[2]);	
@@ -64,7 +74,6 @@ int	main(int ac, char **av)
 	}
 	catch(const char * e) {
 		std::cerr << e << '\n';
-	}
-	
+	}	
 	
 }

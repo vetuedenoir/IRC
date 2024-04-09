@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#include <csignal>
 
-
+void	sigint_handler();
 #endif
