@@ -1,3 +1,39 @@
 Pour le programme il sera defini
 
 - Une classe Server, un classe Chanell et une classe User
+
+
+
+
+Lorsque vous concevez un serveur IRC (ou tout autre serveur), 
+la gestion des erreurs est cruciale pour assurer le bon fonctionnement de votre application.
+Voici quelques considérations concernant la gestion des erreurs dans votre serveur IRC :
+
+1. Gestion des erreurs de connexion :
+Si la fonction connect() échoue lorsqu'un client tente de se connecter à votre serveur IRC,
+cela peut être dû à diverses raisons, telles qu'un problème réseau ou une erreur de configuration.
+Dans de tels cas, vous devez être en mesure de gérer cette erreur de manière appropriée.
+Cela peut inclure l'envoi d'un message d'erreur au client,
+la journalisation de l'erreur pour le débogage, ou même la tentative de reconnexion.
+
+2. Gestion des erreurs de mémoire :
+Si votre serveur IRC manque de mémoire pour accepter de nouvelles connexions
+ou traiter des opérations, cela peut être dû à une fuite de mémoire
+ou à une utilisation excessive de la mémoire par d'autres processus.
+Vous devez surveiller attentivement la consommation de mémoire de votre application
+et implémenter des mécanismes pour gérer les situations où la mémoire devient critique.
+Cela peut inclure la fermeture de certaines connexions pour libérer de la mémoire,
+le rejet de nouvelles connexions avec un message d'erreur approprié,
+ou même l'arrêt contrôlé du serveur si la situation devient critique.
+
+3. Conception robuste :
+Il est important de concevoir votre serveur IRC de manière robuste pour qu'il puisse
+gérer les erreurs et les situations imprévues sans s'arrêter complètement.
+Cela peut être réalisé en utilisant des techniques telles que la gestion des exceptions,
+la journalisation des erreurs, la reprise après erreur et
+la mise en place de mécanismes de récupération en cas d'échec.
+
+En résumé, votre serveur IRC doit être capable de gérer les erreurs de manière appropriée
+sans s'arrêter complètement.
+Il doit être robuste, résilient et capable de fonctionner
+de manière fiable dans des conditions variées.

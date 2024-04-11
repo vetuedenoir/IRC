@@ -36,9 +36,9 @@ void	Serveur::create_epoll()
 	_epoll_fd = epoll_create(1);
 	if (_epoll_fd == -1)
 		throw std::runtime_error("Error: Cannot create epoll");
-	_event.events = EPOLLIN;
-	_event.data.fd = _socket_fd;
-	if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, _socket_fd, &_event) == -1)
+	_events[0].events = EPOLLIN;
+	_events[0].data.fd = _socket_fd;
+	if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, _socket_fd, _events) == -1)
 		throw std::runtime_error("Error: epoll_ctl");
 }
 
@@ -46,17 +46,59 @@ Serveur::Serveur(const int &port, const std::string &password) : _port(port), _p
 {
 	create_socket();
 	bind_socket();
-	if (listen(_socket_fd, SOMAXCONN) == 1)
-	{
-		close(_socket_fd);
+	if (listen(_socket_fd, 100) == 1)
 		throw std::runtime_error("Error: Cannot listen to socket");
-	}
 	create_epoll();
+}
+
+void	Serveur::create_client()
+{
+	int				client_fd;
+	struct sockaddr_in cli_sock_addr;
+	socklen_t		addrlen;
+
+	std::memset(&cli_sock_addr, 0, sizeof(cli_sock_addr));
+	addrlen = sizeof(cli_sock_addr);
+	client_fd = accept(_socket_fd, (struct sockaddr *)&cli_sock_addr, &addrlen);
+	if (client_fd == -1)
+		return (run_error("Cannot accept new connection: "));
+	Client *client = new Client(client_fd);
+	_list_clients.push_back(client);
+}
+
+void	Serveur::handle_cmds(int i)
+{
+	char	*buffer[500];
+	int		count = 1;
+
+	while (count != 0)
+	{
+		count = read(_events[i].data.fd, buffer, 500);
+		if (count == -1)
+			return (run_error("Cannot read in socket: "));
+		std::cout << buffer;
+	}
+	std::cout << std::endl;
 }
 
 void	Serveur::run_serveur()
 {
+	int	num_events;
+	int	i;
 
+	while (g_run)
+	{
+		num_events = epoll_wait(_epoll_fd, _events, 200, -1);
+		if (num_events == -1)
+			throw std::runtime_error("Error: epoll_wait");
+		for (i = 0; i < num_events; ++i)
+		{
+			if (_events[i].data.fd == _socket_fd)
+				create_client();
+			else
+				handle_cmds(i);
+		}
+	}
 }
 
 Serveur::~Serveur()
@@ -77,3 +119,8 @@ Serveur::~Serveur()
 }
 
 
+void	run_error(char *str)
+{
+	std::cerr << "Error: ";
+	perror(str);
+}

@@ -3,7 +3,7 @@
 #include <cerrno>
 
 
-bool	g_run = 1;
+bool g_run = 1;
 
 
 void	sigint_handler(int signo)
@@ -65,6 +65,7 @@ int	main(int ac, char **av)
 	{
 		init_passw(av[2]);	
 		Serveur serveur(init_port(av[1]), av[2]);
+		serveur.run_serveur();
 	}
 	catch(const std::exception& e) {
 		std::cerr << e.what();
