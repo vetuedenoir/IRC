@@ -9,6 +9,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <stdio.h>
+#include <cerrno>
+
+
 
 #include <string>
 #include <cstring>
@@ -18,12 +22,20 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 
+
+#include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 extern bool	g_run;
 
 class Client;
 class Channel;
 
-void	run_error(char *str);
+#define MAX_EVENTS 200
+#define SIZE_QUEUE 100
+
+void	run_error(std::string msg);
 
 class Serveur
 {
@@ -35,7 +47,8 @@ class Serveur
 	struct sockaddr_in	_sock_addr;
 
 	int					_epoll_fd;
-	struct epoll_event	_events[201];
+	struct epoll_event	_event;
+	struct epoll_event	_events_list[MAX_EVENTS];
 
 	std::vector<Client *> _list_clients;
 	

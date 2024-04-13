@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include <unistd.h>
+
 class Client
 {
 	std::string _username;

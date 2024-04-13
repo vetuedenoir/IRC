@@ -5,7 +5,7 @@ RM = rm -rf
 
 NAME = ircserv
 
-SRC = main.cpp Serveur.cpp
+SRC = main.cpp Serveur.cpp Client.cpp
 
 SRC_DIR = ./srcs/
 SRCS = $(addprefix $(SRC_DIR), $(SRC))
