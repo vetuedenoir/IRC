@@ -18,6 +18,7 @@
 #include <cstring>
 #include <iostream>
 #include <vector>
+#include <map>
 
 #include "Client.hpp"
 #include "Channel.hpp"
@@ -50,7 +51,8 @@ class Serveur
 	struct epoll_event	_event;
 	struct epoll_event	_events_list[MAX_EVENTS];
 
-	std::vector<Client *> _list_clients;
+	//Chaque client est identifier par son fd
+	std::map<int, Client *> _list_clients;
 	
 
 	void	create_socket();

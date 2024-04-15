@@ -57,25 +57,18 @@ void	Serveur::create_client()
 	struct sockaddr_in cli_sock_addr;
 	socklen_t		addrlen;
 
-	std::cout << "in create client" << std::endl;
 	std::memset(&cli_sock_addr, 0, sizeof(cli_sock_addr));
 	addrlen = sizeof(cli_sock_addr);
 	client_fd = accept(_socket_fd, (struct sockaddr *)&cli_sock_addr, &addrlen);
 	if (client_fd == -1)
 		return (run_error("Cannot accept new connection: "));
-	int	flags = fcntl(client_fd, F_GETFL, 0);
-	if (flags == -1)
-	{
-		close(client_fd);
-		return (run_error("Cannot accept new connection: "));
-	}
-	if (fcntl(client_fd, F_SETFL, flags | O_NONBLOCK) == -1)
+	if (fcntl(client_fd, F_SETFL, fcntl(client_fd, F_GETFL, 0) | O_NONBLOCK) == -1)
 	{
 		close(client_fd);
 		return (run_error("Cannot accept new connection: "));
 	}
 
-	//if (getsockname)
+	//if (!getsockname(client_fd, (struct sockaddr *)&cli_sock_addr, &addrlen))
 
 	_event.events = EPOLLIN;
 	_event.data.fd = client_fd;
@@ -85,14 +78,13 @@ void	Serveur::create_client()
 		return (run_error("Error: epoll_ctl"));
 	}
 	Client *client = new(std::nothrow) Client(client_fd);
+	if (client == NULL)
 	{
 		epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, client_fd, NULL);
 		close(client_fd);
 		return (run_error("Error: new Client"));
 	}
-	_list_clients.push_back(client);
-	
-	std::cout << "client creer " << std::endl;
+	_list_clients.insert(std::pair<int, Client *>(client_fd, client));
 }
 
 void	Serveur::handle_cmds(int i)
@@ -104,8 +96,6 @@ void	Serveur::handle_cmds(int i)
 	std::cout << "in handle commande" << std::endl;
 
 	count = recv(_events_list[i].data.fd, buffer, 512, MSG_DONTWAIT);
-	// if (errno == EAGAIN && errno == EWOULDBLOCK)
-	// 	return ;
 	if (count == -1)
 		return (run_error("Cannot read in socket: "));
 	if (count == 0)
@@ -158,7 +148,7 @@ Serveur::~Serveur()
 			throw std::runtime_error("Error: Cannot close socket fd");
 	}
 	for (size_t i = 0; i < _list_clients.size(); i++)
-		delete _list_clients[i];
+		delete _list_clients[i].first;
 	if (_epoll_fd > 0)
 	{
 		if (close(_epoll_fd) == -1)

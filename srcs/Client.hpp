@@ -7,8 +7,9 @@
 
 class Client
 {
-	std::string _username;
-	int	_sock_fd;
+	std::string 		_username;
+	int					_sock_fd;
+	//struct sockaddr_in	_addr;
  public:
 	Client(int sock_fd);
 	~Client();
