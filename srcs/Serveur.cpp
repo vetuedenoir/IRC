@@ -87,24 +87,32 @@ void	Serveur::create_client()
 	_list_clients.insert(std::pair<int, Client *>(client_fd, client));
 }
 
+void	Serveur::remove_client(int fd)
+{
+	delete _list_clients[fd];
+	epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL);
+	_list_clients.erase(fd);
+}
+
 void	Serveur::handle_cmds(int i)
 {
 	char	buffer[512];
 	int		count = 1;
 
-	//memset(&buffer, 0, 512);
-	std::cout << "in handle commande" << std::endl;
-
+	std::cout << "------------------------------------------------------\n";
 	count = recv(_events_list[i].data.fd, buffer, 512, MSG_DONTWAIT);
 	if (count == -1)
 		return (run_error("Cannot read in socket: "));
 	if (count == 0)
-	{	//delete client
-		//ferme le fd du client et remove le fd de l intereste liste d epoll
-		 epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, _events_list[i].data.fd, NULL);
-	}
+		return (remove_client(_events_list[i].data.fd));
 	buffer[count] = 0;
 	std::cout << buffer << std::endl;
+	std::cout << (int)buffer[count - 1] << std::endl;
+
+	//la fonction evra renvoye un msg au client lui disant que sa commande est trop longue
+	if (count == 512 && (buffer[count] != '\r' || buffer[count] != '\n'))
+		send(_events_list[i].data.fd, "erreur\n", 7, MSG_DONTWAIT);
+
 	
 }
 
@@ -148,7 +156,7 @@ Serveur::~Serveur()
 			throw std::runtime_error("Error: Cannot close socket fd");
 	}
 	for (size_t i = 0; i < _list_clients.size(); i++)
-		delete _list_clients[i].first;
+		delete _list_clients[i];
 	if (_epoll_fd > 0)
 	{
 		if (close(_epoll_fd) == -1)

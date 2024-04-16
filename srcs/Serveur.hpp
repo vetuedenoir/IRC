@@ -60,7 +60,9 @@ class Serveur
 	void	create_epoll();
 	void	create_client();
 	void	handle_cmds(int i);
+	void	remove_client(int fd);
  public:
+	// long	;
 	Serveur(const int &port, const std::string &password_);
 	~Serveur();
 	void	run_serveur();
