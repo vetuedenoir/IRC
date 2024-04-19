@@ -49,6 +49,7 @@ Serveur::Serveur(const int &port, const std::string &password) : _port(port), _p
 	if (listen(_socket_fd, SIZE_QUEUE) == 1)
 		throw std::runtime_error("Error: Cannot listen to socket");
 	create_epoll();
+	std::time(&_date_lancement);
 }
 
 void	Serveur::create_client()
@@ -67,9 +68,8 @@ void	Serveur::create_client()
 		close(client_fd);
 		return (run_error("Cannot accept new connection: "));
 	}
-
-	//if (!getsockname(client_fd, (struct sockaddr *)&cli_sock_addr, &addrlen))
-
+	if (getsockname(client_fd, (struct sockaddr *)&cli_sock_addr, &addrlen))
+		return (run_error("Error: getsockname"));
 	_event.events = EPOLLIN;
 	_event.data.fd = client_fd;
 	if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, client_fd, &_event) == -1)
@@ -77,7 +77,7 @@ void	Serveur::create_client()
 		close(client_fd);
 		return (run_error("Error: epoll_ctl"));
 	}
-	Client *client = new(std::nothrow) Client(client_fd);
+	Client *client = new(std::nothrow) Client(client_fd, cli_sock_addr);
 	if (client == NULL)
 	{
 		epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, client_fd, NULL);
@@ -92,6 +92,12 @@ void	Serveur::remove_client(int fd)
 	delete _list_clients[fd];
 	epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL);
 	_list_clients.erase(fd);
+}
+
+void	parse_cmd(std::string buffer, int fd)
+{
+	//identifier les element de la commande
+	// et les decouper
 }
 
 void	Serveur::handle_cmds(int i)
@@ -111,27 +117,27 @@ void	Serveur::handle_cmds(int i)
 
 	//la fonction evra renvoye un msg au client lui disant que sa commande est trop longue
 	if (count == 512 && (buffer[count] != '\r' || buffer[count] != '\n'))
-		send(_events_list[i].data.fd, "erreur\n", 7, MSG_DONTWAIT);
-
-	
+		send(_events_list[i].data.fd, "erreur : message cannot exced 512 bytes\n", 7, MSG_DONTWAIT);
+	else
+		parse_cmd(buffer, _events_list[i].data.fd);
 }
 
 void	Serveur::run_serveur()
 {
 	int	num_events;
 	int	i;
-
-	struct in_addr addr;
+	in_addr_t ad;
 	struct hostent *host;
 
-	inet_aton("127.0.0.1", &addr);
-	host = gethostbyaddr((const char *)&addr, sizeof(struct in_addr), AF_INET);
+	ad = inet_addr("127.0.0.1");
+	host = gethostbyaddr((const char *)&ad, sizeof(struct in_addr), AF_INET);
 	if (host == NULL)
 		throw std::runtime_error("gethostbyaddr");
 	std::cout << "hostent : \n" << "h_name = " << host->h_name << std::endl;
 	std::cout << "h_aliases = " << host->h_aliases << std::endl;
 	std::cout << "h_addrtype = " << host->h_addrtype << std::endl; 
 
+	
 	while (g_run)
 	{
 		num_events = epoll_wait(_epoll_fd, _events_list, MAX_EVENTS, -1);

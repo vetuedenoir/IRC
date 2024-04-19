@@ -13,7 +13,7 @@
 #include <cerrno>
 
 
-
+#include <ctime>
 #include <string>
 #include <cstring>
 #include <iostream>
@@ -42,6 +42,7 @@ class Serveur
 {
  private:
 
+	time_t				_date_lancement;
 	uint16_t			_port;
 	std::string			_password;
 	int					_socket_fd;
@@ -61,6 +62,7 @@ class Serveur
 	void	create_client();
 	void	handle_cmds(int i);
 	void	remove_client(int fd);
+
  public:
 	// long	;
 	Serveur(const int &port, const std::string &password_);
