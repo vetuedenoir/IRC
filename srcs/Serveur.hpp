@@ -23,6 +23,8 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 
+#include "numerics.hpp"
+
 
 #include <netdb.h>
 #include <netinet/in.h>
@@ -35,6 +37,14 @@ class Channel;
 
 #define MAX_EVENTS 200
 #define SIZE_QUEUE 100
+
+typedef struct message_s
+{
+	// std::string 				source;
+	std::string					commande;
+	std::vector<std::string>	parametres;
+}	message_t;
+
 
 void	run_error(std::string msg);
 
@@ -62,6 +72,7 @@ class Serveur
 	void	create_client();
 	void	handle_cmds(int i);
 	void	remove_client(int fd);
+	message_t	parse_buff(const std::string &buffer, size_t &debut, size_t posn, size_t posr);
 
  public:
 	// long	;

@@ -2,10 +2,11 @@
 
 Client::Client(int sock_fd, struct sockaddr_in addr) : _sock_fd(sock_fd), _addr(addr)
 {
+	_nickname = "?";
 	_adresse_ip = inet_ntoa(_addr.sin_addr);
 	std::time(&_time_connection);
 	_time_last_msg = _time_connection;
-	_connecte = false;
+	_is_auth = false;
 }
 
 Client::~Client()
@@ -14,27 +15,64 @@ Client::~Client()
 }
 
 
-std::string	Client::getUsername() const
+const std::string&	Client::getUsername() const
 {
 	return _username;
 }
 
-int			Client::getSock_fd() const
+const std::string&	Client::getNickname() const
+{
+	return _nickname;
+}
+
+const int&	Client::getSock_fd() const
 {
 	return _sock_fd;
 }
 
-time_t		Client::getTime_connection() const
+const time_t&		Client::getTime_connection() const
 {
 	return _time_connection;
 }
 
-time_t		Client::getTime_last_msg() const
+const time_t&		Client::getTime_last_msg() const
 {
 	return	_time_last_msg;
 }
 
-std::string	Client::getAdresse_ip() const
+const std::string&	Client::getAdresse_ip() const
 {
 	return _adresse_ip;
+}
+
+const std::string&	Client::getInput_buf() const
+{
+	return _input_buf;
+}
+
+int	Client::setInput_buf(std::string buff)
+{
+	_input_buf = buff;
+	if (_input_buf[_input_buf.size() - 1] == '\n' || _input_buf[_input_buf.size() - 1] == '\r')
+		return 0;
+	else
+		return 1;
+}
+
+int Client::verif_return()
+{
+	if (_input_buf.find('\n') != std::string::npos || _input_buf.find('\r') != std::string::npos)
+		return 1;
+	else
+		return 0;
+}
+
+void	Client::clearBuf()
+{
+	_input_buf = "";
+}
+
+int	Client::sendMsg(const std::string &msg)
+{
+	return (send(_sock_fd, msg.c_str(), msg.size(),  MSG_DONTWAIT));
 }
