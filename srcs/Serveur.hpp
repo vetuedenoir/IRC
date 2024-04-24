@@ -71,12 +71,13 @@ class Serveur
 	void	create_epoll();
 	void	create_client();
 	void	handle_cmds(int i);
-	void	remove_client(int fd);
 	message_t	parse_buff(const std::string &buffer, size_t &debut, size_t posn, size_t posr);
 
  public:
 	// long	;
+	void	remove_client(int fd);
 	Serveur(const int &port, const std::string &password_);
+	const std::string& getPass() const;
 	~Serveur();
 	void	run_serveur();
 };

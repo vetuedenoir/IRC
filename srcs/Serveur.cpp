@@ -166,7 +166,7 @@ void	Serveur::handle_cmds(int i)
 	}
 	else
 	{
-		std::cout << "Buffer : " << buffer;
+		//std::cout << "Buffer : " << buffer;
 		if (!client->setInput_buf(client->getInput_buf() + buffer))
 		{
 			std::cout << client->getInput_buf();
@@ -204,7 +204,6 @@ void	Serveur::run_serveur()
 	std::cout << "hostent : \n" << "h_name = " << host->h_name << std::endl;
 	std::cout << "h_aliases = " << host->h_aliases << std::endl;
 	std::cout << "h_addrtype = " << host->h_addrtype << std::endl; 
-	std::cout << "SIZE OF BOOL " << sizeof(bool) << std::endl; 
 
 	while (g_run)
 	{
@@ -246,4 +245,9 @@ void	run_error(std::string msg)
 {
 	std::cerr << "Error: ";
 	perror(msg.c_str());
+}
+
+const std::string&	Serveur::getPass() const
+{
+	return _password;
 }
