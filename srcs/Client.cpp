@@ -7,12 +7,14 @@ Client::Client(int sock_fd, struct sockaddr_in addr) : _sock_fd(sock_fd), _addr(
 
 	_nickname = "_?_";
 	_adresse_ip = inet_ntoa(_addr.sin_addr);
+	std::cout << "adresse ip >>>> " << _adresse_ip << std::endl;
 	ad = inet_addr(_adresse_ip.c_str());
 	host = gethostbyaddr((const char *)&ad, sizeof(struct in_addr), AF_INET);
 	if (host == NULL)
 		_hostname = _adresse_ip;
 	else
 		_hostname = host->h_name;
+	std::cout << "hostname du clinet >>> " << _hostname << std::endl;
 	std::time(&_time_connection);
 	_time_last_msg = _time_connection;
 	_is_auth = false;
@@ -82,6 +84,11 @@ int	Client::setInput_buf(std::string buff)
 void	Client::setIs_auth(int level)
 {
 	_is_auth = level;
+}
+
+void	Client::setNick(std::string &nick)
+{
+	_nickname = nick;
 }
 
 

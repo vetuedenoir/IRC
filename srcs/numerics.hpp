@@ -6,14 +6,20 @@
 #include "Serveur.hpp"
 #include "Client.hpp"
 
-#define NICK_CHARACTERS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789{}[]'\'|"
+#define NICK_CHARACTERS std::string("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789{}[]'\'|")
 
 
 #define RPL_WELCOM(nickname) (std::string(":") + SERVEUR_NAME + " 001 " + nickname + " :Welcome to the IRC " + SERVEUR_NAME + ", my dear " + nickname + " !!!" + "\r\n")
 
-#define ERR_NONICKNAMEGIVEN(host) (std::string(":") + SERVEUR_NAME + " 431 " + host + " :No nickname given\r\n")
+
 
 #define ERR_INPUTOOLONG(nickname) (std::string(":") + SERVEUR_NAME + " 417 " + nickname + "Input line was too long\r\n")
+
+#define ERR_NONICKNAMEGIVEN(host) (std::string(":") + SERVEUR_NAME + " 431 " + host + " :No nickname given\r\n")
+
+#define ERR_ERRONEUSNICKNAME(host, nickname) (std::string(":") + SERVEUR_NAME + " 432 " + nickname + " :Erroneus nickname\r\n")
+
+#define ERR_NICKNAMEINUSE(host, nickname) (std::string(":") + SERVEUR_NAME + " 433 " + host + " " + nickname + " :Nickname is already in use\r\n")
 
 #define ERR_NEEDMOREPARAMS(nickname, command) (std::string(":") + SERVEUR_NAME + " 461 " + nickname + " " + command + " :Not enough parameters\r\n")
 

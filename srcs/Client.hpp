@@ -49,6 +49,7 @@ class Client
 
 	int	setInput_buf(std::string buff);
 	void	setIs_auth(int level);
+	void	setNick(std::string &nick);
 	int verif_return();
 	void	clearBuf();
 	int		sendMsg(const std::string &msg);

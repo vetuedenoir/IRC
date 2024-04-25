@@ -64,13 +64,15 @@ void	Serveur::create_client()
 	client_fd = accept(_socket_fd, (struct sockaddr *)&cli_sock_addr, &addrlen);
 	if (client_fd == -1)
 		return (run_error("Cannot accept new connection: "));
-	if (fcntl(client_fd, F_SETFL, O_NONBLOCK) == -1)
+	if (getsockname(client_fd, (struct sockaddr *)&cli_sock_addr, &addrlen))
+		return (run_error("Error: getsockname"));
+	if (fcntl(client_fd, F_SETFL, fcntl(client_fd, F_GETFL, 0) | O_NONBLOCK) == -1)
 	{
 		close(client_fd);
 		return (run_error("Cannot accept new connection: "));
 	}
-	if (getsockname(client_fd, (struct sockaddr *)&cli_sock_addr, &addrlen))
-		return (run_error("Error: getsockname"));
+	// if (getpeername(client_fd, (struct sockaddr *)&cli_sock_addr, &addrlen))
+	// 	return (run_error("Error: getsockname"));
 	_event.events = EPOLLIN;// | EPOLLOUT;
 	_event.data.fd = client_fd;
 	if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, client_fd, &_event) == -1)
@@ -115,7 +117,9 @@ message_t	Serveur::parse_buff(const std::string &buffer, size_t &debut, size_t p
 	if (limite < pos)
 		pos = limite;
 	msg.commande = buffer.substr(debut, pos - debut);
-	debut = pos + 1;
+	while (buffer[pos] == ' ')
+		pos++;
+	debut = pos;
 	while (debut < limite)
 	{
 		if (buffer[debut] == ':')
@@ -127,8 +131,10 @@ message_t	Serveur::parse_buff(const std::string &buffer, size_t &debut, size_t p
 		pos = buffer.find(' ', debut);
 		if (limite < pos)
 			pos = limite;
+		while (buffer[pos] == ' ')
+			pos++;
 		msg.parametres.push_back(buffer.substr(debut, pos - debut));
-		debut = pos + 1;
+		debut = pos;
 	}
 	while (buffer[debut] == '\r' || buffer[debut] == '\n')
 		debut++;
@@ -251,3 +257,9 @@ const std::string&	Serveur::getPass() const
 {
 	return _password;
 }
+
+const std::map<int, Client *>&	Serveur::getList_clients() const
+{
+	return _list_clients;
+}
+
