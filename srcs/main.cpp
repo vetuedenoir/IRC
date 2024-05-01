@@ -2,9 +2,7 @@
 #include "Serveur.hpp"
 #include <cerrno>
 
-
 bool g_run = 1;
-
 
 void	sigint_handler(int signo)
 {
@@ -14,7 +12,7 @@ void	sigint_handler(int signo)
 
 void init_passw(const std::string &pass)
 {
-	bool	requirement[3] = {0};
+	// bool	requirement[4] = {0};
 
 	if (pass.size() < 6)
 		throw "Erreur MDP: trop court, minimum 6 caracteres";
@@ -24,17 +22,19 @@ void init_passw(const std::string &pass)
 	for (size_t i = 0; i < pass.size(); i++)
 	{
 		c = pass[i];
-		if (isdigit(c))
-			requirement[0] = true;
-		if (isalpha(c))
-			requirement[1] = true;
-		if (isupper(c))
-			requirement[2] = true;
-		if (!isalnum(c))
-			throw "Erreur MDP: uniquement des caracteres alphanumerique accepter";
+		// if (isdigit(c))
+		// 	requirement[0] = true;
+		// if (islower(c))
+		// 	requirement[1] = true;
+		// if (isupper(c))
+		// 	requirement[2] = true;
+		// if (ispunct(c))
+		// 	requirement[3] = true;
+		if (!isgraph(c))
+			throw "Erreur MDP: uniquement des caracteres graphique accepter";
 	}
-	if (!requirement[0] || !requirement[1] || !requirement[2])
-		throw "Erreur MDP: doit comporter au moins une majuscule, une minuscule et un chiffre";
+	// if (!requirement[0] || !requirement[1] || !requirement[2] || !requirement[3])
+	// 	throw "Erreur MDP: doit comporter au moins une majuscule, une minuscule, un chiffre et un caractere speciales";
 }
 
 uint16_t	init_port(const std::string &strport)
@@ -45,10 +45,12 @@ uint16_t	init_port(const std::string &strport)
 	if (strport.size() > 5)
 		throw "Erreur: port inexistant";
 	port = std::strtol(strport.c_str(), &endptr, 10);
-	if (port < 0 || port > 65535)
-		throw "Erreur: port inexistant";
 	if (endptr != &strport[strport.length()])
 		throw "Erreur: port inexistant";
+	if (port < 0 || port > 65535)
+		throw "Erreur: port inexistant";
+	if (port == 0)
+		throw	"Erreur: invalide port";
 	return (port);
 }
 
@@ -72,9 +74,11 @@ int	main(int ac, char **av)
 		if (errno != 0)
 			std::cerr << ": " <<  std::strerror(errno);
 		std::cerr<< std::endl;
+		return (1);
 	}
 	catch(const char * e) {
 		std::cerr << e << '\n';
+		return (1);
 	}	
-	
+	return (0);
 }

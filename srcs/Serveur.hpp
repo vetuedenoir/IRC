@@ -23,7 +23,9 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 
+#include "utils.hpp"
 #include "numerics.hpp"
+#include "commande/commande.hpp"
 
 
 #include <netdb.h>
@@ -35,8 +37,9 @@ extern bool	g_run;
 class Client;
 class Channel;
 
-#define MAX_EVENTS 200
-#define SIZE_QUEUE 100
+#define MAX_EVENTS	200
+#define SIZE_QUEUE	100
+#define	BUFF_SIZE	512
 
 typedef struct message_s
 {
@@ -46,13 +49,12 @@ typedef struct message_s
 }	message_t;
 
 
-void	run_error(std::string msg);
-
 class Serveur
 {
  private:
 
-	time_t				_date_lancement;
+	time_t				_raw_time;
+	std::string			_str_time;
 	uint16_t			_port;
 	std::string			_password;
 	int					_socket_fd;
@@ -64,6 +66,8 @@ class Serveur
 
 	//Chaque client est identifier par son fd
 	std::map<int, Client *> _list_clients;
+	std::map<std::string, bool (*)(Serveur *, Client *, std::vector<std::__cxx11::basic_string<char> >&)> _list_cmd;
+
 	
 
 	void	create_socket();
@@ -72,6 +76,7 @@ class Serveur
 	void	create_client();
 	void	handle_cmds(int i);
 	message_t	parse_buff(const std::string &buffer, size_t &debut, size_t posn, size_t posr);
+	void	set_commande();
 
  public:
 	// long	;
@@ -81,7 +86,7 @@ class Serveur
 	void	run_serveur();
 
 	const std::string& getPass() const;
-	const std::map<int, Client *>&	getList_clients() const;
+	std::map<int, Client *>&	getList_clients();
 };
 
 #endif

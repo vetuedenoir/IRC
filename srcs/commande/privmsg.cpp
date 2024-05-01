@@ -1,6 +1,47 @@
 #include "commande.hpp"
 
-bool	privmsg(Serveur &serveur, Client &client, std::vector<std::string> &arguments)
+Client *verif_occ(std::string cible, std::map<int, Client *> &list_client)
 {
-	
+	std::map<int, Client *>::iterator it;
+
+	for (it = list_client.begin(); it != list_client.end(); it++)
+	{
+		std::cout << "verif > " << cible << " == " << rcasemape(it->second->getNickname()) << std::endl;
+		if (cible == rcasemape(it->second->getNickname()))
+			return (it->second);
+	}
+	return (NULL);
+}
+
+bool privmsg(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
+{
+	std::string cible;
+	std::string msg;
+
+	if (client->getIs_auth() != 3)
+		return (0);
+	if (arguments.size() == 0)
+		return (client->sendMsg(ERR_NEEDMOREPARAMS(client->getNickname(), "PRIVMSG")));
+	if (arguments.size() == 1)
+		return (client->sendMsg(ERR_NOTEXTTOSEND()));
+	cible = arguments[0].substr(0, arguments[0].find(','));
+	if (cible[0] != '#')
+	{
+		Client *client_cible = verif_occ(rcasemape(cible), serveur->getList_clients());
+		if (client_cible == NULL)
+			return (client->sendMsg(ERR_NOSUCHNICK(client->getNickname(), cible)));
+		msg = ":" + client->getNickname() + "!" + client->getUsername() + "@" + SERVEUR_NAME;
+		msg.append(" PRIVMSG " + cible + " :");
+		msg.append(arguments[1]);
+		msg.append("\r\n");
+		client_cible->sendMsg(msg);
+	}
+	// extraction de la cible dans le 1 er arg
+	// casemap de al cible
+	// identifier si c est un channel ou un nick
+	// chercher si le nick existe
+	//  concatener les arguments
+	//  envoyer le message
+	// verifier les droit etc ...
+	return (0);
 }
