@@ -66,6 +66,8 @@ class Serveur
 
 	//Chaque client est identifier par son fd
 	std::map<int, Client *> _list_clients;
+	std::map<std::string, Channel *> _list_channel;
+
 	std::map<std::string, bool (*)(Serveur *, Client *, std::vector<std::__cxx11::basic_string<char> >&)> _list_cmd;
 
 	
@@ -80,13 +82,19 @@ class Serveur
 
  public:
 	// long	;
-	void	remove_client(int fd);
 	Serveur(const int &port, const std::string &password_);
 	~Serveur();
 	void	run_serveur();
 
 	const std::string& getPass() const;
 	std::map<int, Client *>&	getList_clients();
+	std::map<std::string, Channel *> getList_channel();
+
+	void	addChannel(Channel *chan);
+	Channel*	getChan(const std::string &chanName);
+
+	void	remove_client(int fd, std::string reason);
+	void	remove_channel(const std::string &chanName);
 };
 
 #endif

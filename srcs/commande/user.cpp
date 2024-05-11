@@ -19,7 +19,7 @@ bool	user(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 			return (1);
 		return (0);
 	}
-	if (arguments[0].size() <= 1)
+	if (arguments[0].size() < 1)
 	{
 		if (client->sendMsg(ERR_NEEDMOREPARAMS(client->getHost_serv(), "USER")) == -1)
 			return (1);
@@ -28,5 +28,6 @@ bool	user(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 	client->setUsername(std::string("~") + arguments[0].substr(0, USERLEN));
 	client->setIs_auth(3);
 	client->sendMsg(RPL_WELCOM(client->getNickname()));
+	client->setFullName();
 	return 0;
 }

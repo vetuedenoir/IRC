@@ -56,8 +56,6 @@ Serveur::Serveur(const int &port, const std::string &password) : _port(port), _p
 	if (listen(_socket_fd, SIZE_QUEUE) == 1)
 		throw std::runtime_error("Error: Cannot listen to socket");
 	create_epoll();
-
-	std::cout << RPL_WELCOM("kiki") << std::endl; 
 }
 
 void	Serveur::create_client()
@@ -88,9 +86,29 @@ void	Serveur::create_client()
 	_list_clients.insert(std::pair<int, Client *>(client_fd, client));
 }
 
-void	Serveur::remove_client(int fd)
+void	Serveur::remove_client(int fd, std::string reason)
 {
 	std::cout << "in remove client" << std::endl;
+	std::map<std::string, int> cliChannel = _list_clients[fd]->getMychannel();
+	std::map<std::string, int>::iterator cli_it;
+	std::map<std::string, Channel *>::iterator serv_it;
+	std::string nick = _list_clients[fd]->getNickname();
+	std::string cnick = rcasemape(nick);
+
+	for (cli_it = cliChannel.begin(); cli_it != cliChannel.end(); cli_it++)
+	{
+		serv_it = _list_channel.find(cli_it->first);
+		if (serv_it->second->remove_cli(nick, reason))
+		{
+			delete _list_channel[serv_it->first];
+			_list_channel.erase(serv_it->first);
+		}
+	}
+	for (serv_it = _list_channel.begin(); serv_it != _list_channel.end(); serv_it++)
+	{
+		if (serv_it->second->isInvited(cnick))
+			serv_it->second->remove_invite(cnick);
+	}
 	delete _list_clients[fd];
 	epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL);
 	_list_clients.erase(fd); 
@@ -144,9 +162,9 @@ void	print_message(message_t &msg)
 	if (msg.commande == "")
 		return ;
 	std::cout << "-------message---------------------------------" << std::endl;
-	std::cout << msg.commande << "|" <<  std::endl;
-	for (size_t i = 0; i < msg.parametres.size(); i++)
-		std::cout << "x " << msg.parametres[i] << "|" << std::endl;
+	//std::cout << msg.commande << "|" <<  std::endl;
+	// for (size_t i = 0; i < msg.parametres.size(); i++)
+	// 	std::cout << "x " << msg.parametres[i] << "|" << std::endl;
 }
 
 void	Serveur::handle_cmds(int i)
@@ -159,20 +177,16 @@ void	Serveur::handle_cmds(int i)
 	if (count == -1)
 		return (run_error("Cannot read in socket: "));
 	if (count == 0)
-		return (remove_client(client->getSock_fd()));
+		return (remove_client(client->getSock_fd(), "ERROR :connection interompue"));
 	buffer[count] = 0;
 	if (count == 512 && (buffer[BUFF_SIZE - 1] != '\r' && buffer[BUFF_SIZE - 1] != '\n'))
-	{
-		if (client->sendMsg(ERR_INPUTOOLONG(client->getNickname())))
-			return (remove_client(_events_list[i].data.fd));
-	}
+		client->sendMsg(ERR_INPUTOOLONG(client->getNickname()));
 	else
 	{
 		if (client->getSizeBuff() + count > 512)
 		{
 			client->clearBuf();
-			if (client->sendMsg(ERR_INPUTOOLONG(client->getNickname())))
-				remove_client(_events_list[i].data.fd);
+			client->sendMsg(ERR_INPUTOOLONG(client->getNickname()));
 			return ;
 		}
 		if (!client->setInput_buf(client->getInput_buf() + buffer))
@@ -190,8 +204,7 @@ void	Serveur::handle_cmds(int i)
 					break ;
 				if (_list_cmd.find(msg.commande) == _list_cmd.end())
 				{
-					if (client->sendMsg(ERR_UNKNOWNCOMMAND(client->getHost_serv(), msg.commande)))
-						return (remove_client(client->getSock_fd()));
+					client->sendMsg(ERR_UNKNOWNCOMMAND(client->getHost_serv(), msg.commande));
 					break ;
 				}
 				if (_list_cmd[msg.commande](this, client, msg.parametres) == 1)
@@ -231,10 +244,15 @@ void	Serveur::run_serveur()
 Serveur::~Serveur()
 {
 	std::cout << nb_client << std::endl;
+	std::map<int, Client *>::iterator 			cli_it;
+	std::map<std::string, Channel *>::iterator	chan_it;
+
 	if (_socket_fd > 0)
 		close(_socket_fd);
-	for (size_t i = 0; i < _list_clients.size(); i++)
-		delete _list_clients[i];
+	for (cli_it = _list_clients.begin(); cli_it !=_list_clients.end(); cli_it++)
+		delete cli_it->second;
+	for (chan_it = _list_channel.begin(); chan_it !=_list_channel.end(); chan_it++)
+		delete chan_it->second;
 	if (_epoll_fd > 0)
 		close(_epoll_fd);
 }
@@ -251,6 +269,12 @@ std::map<int, Client *>&	Serveur::getList_clients()
 	return _list_clients;
 }
 
+std::map<std::string, Channel *> Serveur::getList_channel()
+{
+	return _list_channel;
+}
+
+
 void	Serveur::set_commande()
 {
 	_list_cmd["CAP"] = &cap;
@@ -262,8 +286,37 @@ void	Serveur::set_commande()
 	_list_cmd["NICK"] = &nick;
 	_list_cmd["PART"] = &part;
 	_list_cmd["PASS"] = &pass;
+	_list_cmd["PING"] = &ping;
 	_list_cmd["PRIVMSG"] = &privmsg;
 	_list_cmd["QUIT"] = &quit;
 	_list_cmd["TOPIC"] = &topic;
 	_list_cmd["USER"] = &user;
 }
+
+void	Serveur::addChannel(Channel *chan)
+{
+	_list_channel[rcasemape(chan->getName())] = chan;
+}
+
+Channel*	Serveur::getChan(const std::string &chanName)
+{
+	std::map<std::string, Channel *>::iterator it;
+
+	it = _list_channel.find(chanName);
+	if (it == _list_channel.end())
+		return NULL;
+	return it->second;
+}
+
+void	Serveur::remove_channel(const std::string &chanName)
+{
+	std::map<std::string, Channel *>::iterator it;
+	
+	it = _list_channel.find(chanName);
+	if (it != _list_channel.end())
+	{
+		delete it->second;
+		_list_channel.erase(chanName);
+	}
+}
+

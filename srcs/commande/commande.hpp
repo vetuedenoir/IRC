@@ -16,6 +16,7 @@ bool	mode(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 bool	nick(Serveur *serveur, Client *client, std::vector<std::string> &arguments);
 bool	part(Serveur *serveur, Client *client, std::vector<std::string> &arguments);
 bool	pass(Serveur *serveur, Client *client, std::vector<std::string> &arguments);
+bool	ping(Serveur *serveur, Client *client, std::vector<std::string> &arguments);
 bool	privmsg(Serveur *serveur, Client *client, std::vector<std::string> &arguments);
 bool	quit(Serveur *serveur, Client *client, std::vector<std::string> &arguments);
 bool	topic(Serveur *serveur, Client *client, std::vector<std::string> &arguments);

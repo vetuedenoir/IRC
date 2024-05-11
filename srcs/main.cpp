@@ -14,10 +14,10 @@ void init_passw(const std::string &pass)
 {
 	// bool	requirement[4] = {0};
 
-	if (pass.size() < 6)
-		throw "Erreur MDP: trop court, minimum 6 caracteres";
-	if (pass.size() > 24)
-		throw "Erreur MDP: trop long, maximum 26 caracteres";
+	// if (pass.size() < 6)
+	// 	throw "Erreur MDP: trop court, minimum 6 caracteres";
+	if (pass.size() > 505)
+		throw "Erreur MDP: trop long, maximum 505 caracteres";
 	char	c;
 	for (size_t i = 0; i < pass.size(); i++)
 	{

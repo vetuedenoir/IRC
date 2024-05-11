@@ -5,10 +5,10 @@ RM = rm -rf
 
 NAME = ircserv
 
-SRC = main.cpp Serveur.cpp Client.cpp utils.cpp
+SRC =	main.cpp Serveur.cpp Client.cpp  Channel.cpp utils.cpp
 
-SRC_CMD =  cap.cpp error.cpp invite.cpp join.cpp kick.cpp mode.cpp \
-			nick.cpp part.cpp pass.cpp privmsg.cpp quit.cpp topic.cpp user.cpp
+SRC_CMD =	cap.cpp error.cpp invite.cpp join.cpp kick.cpp mode.cpp nick.cpp\
+			part.cpp pass.cpp privmsg.cpp ping.cpp quit.cpp topic.cpp user.cpp
 
 SRC_DIR = ./srcs/
 SRCS = $(addprefix $(SRC_DIR), $(SRC))

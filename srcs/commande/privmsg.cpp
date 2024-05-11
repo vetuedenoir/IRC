@@ -36,8 +36,21 @@ bool privmsg(Serveur *serveur, Client *client, std::vector<std::string> &argumen
 		msg.append("\r\n");
 		client_cible->sendMsg(msg);
 	}
+	else
+	{
+		Channel *channel = serveur->getChan(rcasemape(cible));
+		if (!channel)
+			return (client->sendMsg(ERR_CANNOTSENDTOCHAN(client->getNickname(), cible)));
+		else if (channel->getClientRights(rcasemape(client->getNickname())) == -1)
+			return (client->sendMsg(ERR_CANNOTSENDTOCHAN(client->getNickname(), cible)));
+		msg = ":" + client->getNickname() + "!" + client->getUsername() + "@" + SERVEUR_NAME;
+		msg.append(" PRIVMSG " + cible + " :");
+		msg.append(arguments[1]);
+		msg.append("\r\n");
+		channel->sendMsg_toCli(msg);
+	}
 	// extraction de la cible dans le 1 er arg
-	// casemap de al cible
+	// casemap de l cible
 	// identifier si c est un channel ou un nick
 	// chercher si le nick existe
 	//  concatener les arguments

@@ -8,6 +8,7 @@ Client::Client(int sock_fd, struct sockaddr_in addr) : _sock_fd(sock_fd)
 	std::string			ip;
 
 	_nickname = "_?_";
+	_username = "_?_";
 	_adresse_ip = inet_ntoa(addr.sin_addr);
 	std::cout << "adresse ip >>>> " << _adresse_ip << std::endl;
 	ad = inet_addr(_adresse_ip.c_str());
@@ -30,7 +31,6 @@ Client::Client(int sock_fd, struct sockaddr_in addr) : _sock_fd(sock_fd)
 	else
 		_host_serv = host->h_name;
 
-
 	std::time(&_time_connection);
 	_time_last_msg = _time_connection;
 	_is_auth = false;
@@ -38,8 +38,8 @@ Client::Client(int sock_fd, struct sockaddr_in addr) : _sock_fd(sock_fd)
 
 Client::~Client()
 {
-	if (_sock_fd)
-		close(_sock_fd);
+	
+	close(_sock_fd);
 }
 
 const std::string &Client::getUsername() const
@@ -92,10 +92,27 @@ const std::string &Client::getHost_serv() const
 	return _host_serv;
 }
 
+int	Client::getRights(std::string chanName)
+{
+	return (_my_channel[chanName]);
+}
+
 size_t	Client::getSizeBuff() const
 {
 	return _input_buf.size();
 }
+
+std::string&		Client::getFullName()
+{
+	return _fullName;
+}
+
+
+std::map<std::string, int>&	Client::getMychannel()
+{
+	return _my_channel;
+}
+
 
 int Client::setInput_buf(std::string buff)
 {
@@ -121,6 +138,17 @@ void	Client::setUsername(std::string nick)
 	_username = nick;
 }
 
+void	Client::setRights(std::string chanName, int rights)
+{
+	_my_channel[chanName] = rights;
+}
+
+void	Client::setFullName()
+{
+	_fullName = _nickname + "~!" + _username + "@" + _host_serv;
+}
+
+
 int Client::verif_return()
 {
 	if (_input_buf.find('\n') != std::string::npos || _input_buf.find('\r') != std::string::npos)
@@ -136,7 +164,35 @@ void Client::clearBuf()
 
 int Client::sendMsg(const std::string &msg)
 {
-	if (send(_sock_fd, msg.c_str(), msg.size(), MSG_DONTWAIT) == -1)
+	if (send(_sock_fd, msg.c_str(), msg.size(), MSG_NOSIGNAL) == -1)
 		return (1);
 	return (0);
+}
+
+void	Client::partAll()
+{
+	//quit tout les channel;
+}
+
+int		Client::getNumsChan()
+{
+	return _my_channel.size();
+}
+
+void	Client::addChan(std::string &chan)
+{
+	_my_channel[rcasemape(chan)] = 0;
+}
+
+bool	Client::inChan(const std::string &chan)
+{
+	if (_my_channel.find(chan) == _my_channel.end())
+		return (0);
+	return (1);
+}
+
+void Client::quit_channel(std::string chanName)
+{
+	_my_channel.erase(chanName);
+	std::cout << "moi " << _nickname << " has quit " << chanName << std::endl;
 }

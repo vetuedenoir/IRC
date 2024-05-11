@@ -63,5 +63,6 @@ bool	nick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 	}
 	else if (client->getIs_auth() == 1)
 		client->setIs_auth(2);
+	client->setFullName();
 	return (0);
 }

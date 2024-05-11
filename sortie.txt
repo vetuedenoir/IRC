@@ -1,0 +1,121 @@
+:*.freenode.net NOTICE * :*** Looking up your ident...
+:*.freenode.net NOTICE * :*** Looking up your hostname...
+:*.freenode.net NOTICE * :*** Could not resolve your hostname: Nameserver failure; using your IP address (62.210.33.100) instead.
+nick coco
+user tjfd dfl op l
+PING :bwHgsYahXa
+:*.freenode.net NOTICE coco :*** Ident lookup timed out, using ~tjfd instead.
+pong :bwHgsYahXa
+:*.freenode.net 001 coco :Welcome to the freenode IRC Network coco!~tjfd@62.210.33.100
+:*.freenode.net 002 coco :Your host is *.freenode.net, running version InspIRCd-3
+:*.freenode.net 003 coco :This server was created 09:22:41 Jun 22 2023
+:*.freenode.net 004 coco *.freenode.net InspIRCd-3 BDHILRSTWcdghikorswxz ABCDEFIJKLMNOPQRSTUWXYZbcdefhijklmnoprstuvwz :BEFIJLWXYZbdefhjklovw
+:*.freenode.net 005 coco ACCEPT=30 AWAYLEN=200 BOT=B CALLERID=g CASEMAPPING=ascii CHANLIMIT=#:20 CHANMODES=IXZbew,k,BEFJLWdfjl,ACDKMNOPQRSTUcimnprstuz CHANNELLEN=64 CHANTYPES=# ELIST=CMNTU ESILENCE=CcdiNnPpTtx EXCEPTS=e :are supported by this server
+:*.freenode.net 005 coco EXTBAN=,ACNOQRSTUacjmnpruwz HOSTLEN=64 INVEX=I KEYLEN=32 KICKLEN=255 LINELEN=512 MAXLIST=I:100,X:100,b:100,e:100,w:100 MAXTARGETS=20 MODES=20 MONITOR=30 NAMELEN=128 NAMESX NETWORK=freenode :are supported by this server
+:*.freenode.net 005 coco NICKLEN=30 PREFIX=(Yohv)!@%+ REMOVE SAFELIST SECURELIST=60 SILENCE=32 STATUSMSG=!@%+ TOPICLEN=390 UHNAMES USERIP USERLEN=10 USERMODES=,,s,BDHILRSTWcdghikorwxz VBANLIST :are supported by this server
+:*.freenode.net 005 coco VLIST=b WATCH=32 WHOX :are supported by this server
+:*.freenode.net 251 coco :There are 19 users and 5983 invisible on 10 servers
+:*.freenode.net 252 coco 8 :operator(s) online
+:*.freenode.net 253 coco 2 :unknown connections
+:*.freenode.net 254 coco 10431 :channels formed
+:*.freenode.net 255 coco :I have 2529 clients and 1 servers
+:*.freenode.net 265 coco :Current local users: 2529  Max: 4101
+:*.freenode.net 266 coco :Current global users: 6002  Max: 10281
+:*.freenode.net 375 coco :*.freenode.net message of the day
+:*.freenode.net 372 coco :  Hello, World!
+:*.freenode.net 372 coco : 
+:*.freenode.net 372 coco :  Welcome to the
+:*.freenode.net 372 coco :          __                               _
+:*.freenode.net 372 coco :         / _|_ __ ___  ___ _ __   ___   __| | ___
+:*.freenode.net 372 coco :        | |_| '__/ _ \/ _ \ '_ \ / _ \ / _` |/ _ \
+:*.freenode.net 372 coco :        |  _| | |  __/  __/ | | | (_) | (_| |  __/
+:*.freenode.net 372 coco :        |_| |_|  \___|\___|_| |_|\___/ \__,_|\___|
+:*.freenode.net 372 coco :                                   AUTONOMOUS ZONE
+:*.freenode.net 372 coco : 
+:*.freenode.net 372 coco :  Connect to us on:
+:*.freenode.net 372 coco : 
+:*.freenode.net 372 coco :  Hostname: irc.freenode.net / chat.freenode.net
+:*.freenode.net 372 coco :  Plaintext: 6660-6669
+:*.freenode.net 372 coco :  TLS/SSL: 6697,7000,7070
+:*.freenode.net 372 coco :  Webchat: https://webchat.freenode.net
+:*.freenode.net 372 coco : 
+:*.freenode.net 372 coco :  By connecting to freenode you indicate that you have read and accept our
+:*.freenode.net 372 coco :  policies and guidelines as set out on https://freenode.net and agree to
+:*.freenode.net 372 coco :  be scanned for an open proxy.
+:*.freenode.net 372 coco : 
+:*.freenode.net 372 coco :  If you are looking for assistance, please try:
+:*.freenode.net 372 coco : 
+:*.freenode.net 372 coco :  #help                    - Help with general IRC and Services.
+:*.freenode.net 372 coco :  #chanhelp                - Help with channels and channel services.
+:*.freenode.net 372 coco :  #IRC                     - Help with the IRC.com by freenode app.
+:*.freenode.net 372 coco : 
+:*.freenode.net 372 coco :  Checkout some of our communities and services:
+:*.freenode.net 372 coco : 
+:*.freenode.net 372 coco :  #freenode-bbs            - BBS [https://bbs.freenode.net/]
+:*.freenode.net 372 coco :  #freenode-bbs-discussion - BBS Discussion
+:*.freenode.net 372 coco :  #freenode-jobs           - Jobs [https://jobs.freenode.net/]
+:*.freenode.net 372 coco :  #freenode                - Chat about freenode.
+:*.freenode.net 372 coco :  #anonchan                - Chat anonymously.
+:*.freenode.net 372 coco : 
+:*.freenode.net 372 coco :  Type /join #<channel>
+:*.freenode.net 372 coco : 
+:*.freenode.net 372 coco :  Thank you for using freenode!
+:*.freenode.net 376 coco :End of message of the day.
+:*.freenode.net 396 coco freenode-rgu.s40.6vib9m.IP :is now your displayed host
+:coco!~tjfd@freenode-rgu.s40.6vib9m.IP MODE coco :+wRix
+:Global!services@services.freenode.net NOTICE coco :[Random News - Oct 27 04:08:42 2023 UTC] 🎉 Join us in #trivia for a thrilling trivia showdown! Test your knowledge and have a blast with us! 🧠💡
+:Harambe!~Harambe@freenode/service/Harambe PRIVMSG coco :VERSION
+join #testounet
+:coco!~tjfd@freenode-rgu.s40.6vib9m.IP JOIN :#testounet
+:*.freenode.net 353 coco = #testounet :coco @kyks
+:*.freenode.net 366 coco #testounet :End of /NAMES list.
+:kyks!~kscordel@freenode-rgu.s40.6vib9m.IP PRIVMSG #testounet :salut
+privmsg kyks :yo mec
+:*.freenode.net 477 coco kyks :You need to be identified to a registered account to message this user
+PING :*.freenode.net
+pong :*.freenode.net
+privmsg #testounet harry 
+privmsg #testounet harry potter
+:kyks!~kscordel@freenode-rgu.s40.6vib9m.IP TOPIC #testounet ::la folie
+PING :*.freenode.net
+pong :*.freenode.net
+:eyou!~eghaffar@freenode-bkr.s40.6vib9m.IP JOIN :#testounet
+:kyks!~kscordel@freenode-rgu.s40.6vib9m.IP PRIVMSG #testounet :bienvenue
+:kyks!~kscordel@freenode-rgu.s40.6vib9m.IP PRIVMSG #testounet :eyou
+:eyou!~eghaffar@freenode-bkr.s40.6vib9m.IP PRIVMSG #testounet :bonjouuuuuur
+:eyou!~eghaffar@freenode-bkr.s40.6vib9m.IP PRIVMSG #testounet :who is coco?
+:kyks!~kscordel@freenode-rgu.s40.6vib9m.IP PRIVMSG #testounet :i dont no
+privmsg #testounet :je suis un mec de passage
+:kyks!~kscordel@freenode-rgu.s40.6vib9m.IP PRIVMSG #testounet :ok ok
+:kyks!~kscordel@freenode-rgu.s40.6vib9m.IP PRIVMSG #testounet :va y test des trucs
+:kyks!~kscordel@freenode-rgu.s40.6vib9m.IP PRIVMSG #testounet :attend je le kick
+:eyou!~eghaffar@freenode-bkr.s40.6vib9m.IP PRIVMSG #testounet :mdrrrrr
+:kyks!~kscordel@freenode-rgu.s40.6vib9m.IP KICK #testounet coco :
+PING :*.freenode.net
+pong  :*.freenode.net
+PING :*.freenode.net
+pong :*.freenode.net
+join #testounet
+:coco!~tjfd@freenode-rgu.s40.6vib9m.IP JOIN :#testounet
+:*.freenode.net 332 coco #testounet :la douceur
+:*.freenode.net 333 coco #testounet eyou!~eghaffar@freenode-bkr.s40.6vib9m.IP :1715195320
+:*.freenode.net 353 coco = #testounet :coco %eyou @kyks
+:*.freenode.net 366 coco #testounet :End of /NAMES list.
+PING :*.freenode.net
+:kyks!~kscordel@freenode-rgu.s40.6vib9m.IP PRIVMSG #testounet :il envoie rpl 333 quand on rejoind ke serveur
+pong :*.freenode.net
+:kyks_!~kscordel@freenode-rgu.s40.6vib9m.IP JOIN :#testounet
+PING :*.freenode.net
+pong :*.freenode.net
+:kyks_!~kscordel@freenode-rgu.s40.6vib9m.IP PRIVMSG #testounet :il y avais : devans la folie car topic contient des espace et c est un seul argument
+:kyks_!~kscordel@freenode-rgu.s40.6vib9m.IP PRIVMSG #testounet :j avais pas vue je suis submerger
+PING :*.freenode.net
+:eyou!~eghaffar@freenode-bkr.s40.6vib9m.IP PRIVMSG #testounet :comment tu as vu que ct rpl 333?
+:eyou!~eghaffar@freenode-bkr.s40.6vib9m.IP PRIVMSG #testounet :oh par rapport a la doc?
+:kyks_!~kscordel@freenode-rgu.s40.6vib9m.IP PRIVMSG #testounet :coco est connecter sur nc
+:eyou!~eghaffar@freenode-bkr.s40.6vib9m.IP PRIVMSG #testounet :mais ici tu le vois le numero ?
+:eyou!~eghaffar@freenode-bkr.s40.6vib9m.IP PRIVMSG #testounet :ah sur nc okok
+:eyou!~eghaffar@freenode-bkr.s40.6vib9m.IP PRIVMSG #testounet :je n ai pas compris : il y avais : devans la folie car topic contient des espace et c est un seul argument
+:kyks_!~kscordel@freenode-rgu.s40.6vib9m.IP PRIVMSG #testounet :oui dans le parsing, tu separe les arguments au espace
+ERROR :Closing link: (~tjfd@62.210.33.100) [Ping timeout: 120 seconds]
+

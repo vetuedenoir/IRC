@@ -18,7 +18,7 @@ bool	pass(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 		else
 		{
 			client->sendMsg(ERR_PASSWDMISMATCH(client->getHost_serv()));
-			serveur->remove_client(client->getSock_fd());
+			serveur->remove_client(client->getSock_fd(), "ERROR :Wrong password");
 			return 1;
 		}
 	}

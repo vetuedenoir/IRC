@@ -1,8 +1,6 @@
 #ifndef CLIENT_HPP
 # define CLIENT_HPP
 
-
-
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
@@ -21,6 +19,7 @@ class Client
 {
 	std::string 		_username;
 	std::string			_nickname;
+	std::string			_fullName;
 
 	const int			_sock_fd;
 	time_t				_time_connection;
@@ -32,7 +31,7 @@ class Client
 
 	std::string			_input_buf;
 
-	// std::map<std::string, >
+	std::map<std::string, int> _my_channel;
 
  public:
 	Client(int sock_fd, struct sockaddr_in addr);
@@ -48,6 +47,10 @@ class Client
 	const int&			getIs_auth() const;
 	const std::string&	getHost_cli() const;
 	const std::string&	getHost_serv() const;
+	int					getRights(std::string chanName);
+	std::map<std::string, int>&	getMychannel();
+	std::string&		getFullName();
+
 
 	size_t		getSizeBuff() const;		
 
@@ -55,11 +58,19 @@ class Client
 	void	setIs_auth(int level);
 	void	setNick(std::string &nick);
 	void	setUsername(std::string nick);
+	void	setRights(std::string chanName, int rights);
+	void	setFullName();
+
 	int verif_return();
 	void	clearBuf();
 	int		sendMsg(const std::string &msg);
+	void	partAll();
+	int		getNumsChan();
 
+	void	addChan(std::string &chan);
+	bool	inChan(const std::string &chan);
 	static size_t nb_client;
+	void quit_channel(std::string chanName);
 
 };
 

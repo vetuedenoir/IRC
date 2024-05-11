@@ -11,6 +11,7 @@
 #define	CHANMODE	"CHANMODE= "
 #define NICKLEN		15
 #define USERLEN		15
+#define	TOPICLEN	150
 
 
 
@@ -20,8 +21,25 @@
 #define RPL_WELCOM(nickname) (std::string(":") + SERVEUR_NAME + " 001 " + nickname + " :Welcome to the IRC " + SERVEUR_NAME +\
 		", my dear " + nickname + " !!!" + "\r\n")
 
+#define	RPL_YOURHOST(nickname) (std::string(":") + SERVEUR_NAME + " 002 " + nickname + " :Your host is " + SERVEUR_NAME + " version 1.0\r\n")
+
+#define	RPL_CREATED(nickname, datetime) (std::string(":") + SERVEUR_NAME + " 003 " + nickname + "this server was created " + datetime + "\r\n")
+
+#define RPL_ISUPPORT(nickname) (std::string(":") )
+
+#define	RPL_TOPIC(nickname, channel, topic) (std::string(":") + SERVEUR_NAME + " 332 " + nickname + " " + channel + ":" + topic + "\r\n")
+
+#define RPL_NAMREPLY(nickname, symbol, channel, list) (std::string(":") + SERVEUR_NAME + " 357 " + nickname + " " + symbole + " " + channel + " :" + list + "\r\n")
+
+#define RPL_ENDOFNAMES(nickname, channel) (std::string(":") + SERVEUR_NAME + " 366 " + nickname + " " + channel + " :End of /NAMES list\r\n")
 
 #define	ERR_NOSUCHNICK(nickname, cible) (std::string(":") + SERVEUR_NAME + " 401 " + cible + " :there is no nickame or channel named like this\r\n")
+
+#define ERR_NOSUCHCHANNEL(nickname, channel) (std::string(":") + SERVEUR_NAME + " 403 " + nickname + " " + channel + " :No such channel\r\n")
+
+#define ERR_CANNOTSENDTOCHAN(nickname, channel) (std::string(":") + SERVEUR_NAME + " 404 " + nickname + " " + channel + " :Cannot send to channel\r\n")
+
+#define ERR_TOMANYCHANNEL(nickname, channel) (std::string(":") + SERVEUR_NAME + " 405 " + nickname + " " + channel + " :You have joined to many channel\r\n")
 
 #define ERR_NOTEXTTOSEND() (std::string(":") + SERVEUR_NAME + " 412 :No text tos send\r\n")
 
@@ -35,11 +53,25 @@
 
 #define ERR_NICKNAMEINUSE(host, nickname) (std::string(":") + SERVEUR_NAME + " 433 " + host + " " + nickname + " :Nickname is already in use\r\n")
 
+#define ERR_USERNOTINCHANNEL(nickname, cible, channel) (std::string(":") + SERVEUR_NAME + " 441 " + nickname + " " + cible +  " " + channel + " :this user is not in the channel\r\n")
+
+#define ERR_NOTONCHANNEL(nickname, channel) (std::string(":") + SERVEUR_NAME + " 442 " + nickname + " " + channel + " :You're not in channel\r\n")
+
 #define ERR_NEEDMOREPARAMS(nickname, command) (std::string(":") + SERVEUR_NAME + " 461 " + nickname + " " + command + " :Not enough parameters\r\n")
 
 #define ERR_ALREADYREGISTERED(host) (std::string(":") + SERVEUR_NAME + " 462 " + host + " :You may not register\r\n")
 
 #define ERR_PASSWDMISMATCH(host) (std::string(":") + SERVEUR_NAME + " 464 " + host + " :Password incorrect\r\n")
+
+#define	ERR_CHANNELISFULL(nickname, channel) (std::string(":") + SERVEUR_NAME + " 471 " + nickname + " " + channel + " :Cannot join channel (+l)\r\n")
+
+#define	ERR_INVITEONLYCHAN(nickname, channel) (std::string(":") + SERVEUR_NAME + " 473 " + nickname + " " + channel + " :Cannot join channel (+i)\r\n")
+
+#define ERR_BADCHANNELKEY(nickname, channel) (std::string(":") + SERVEUR_NAME + " 475 " + nickname + " " + channel + " :Cannot join channel (+K)\r\n")
+
+#define ERR_BADCHANMASK(channel) (std::string(":") + SERVEUR_NAME + " 476 " + channel + " :Bad Channel Mask\r\n")
+
+#define ERR_CHANOPRIVSNEEDED(nickname, channel) (std::string(":") + SERVEUR_NAME + " 482 " + nickname + " " + channel + " :You're not channel operator\r\n") 
 
 
 #endif
