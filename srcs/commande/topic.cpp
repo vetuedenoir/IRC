@@ -4,7 +4,7 @@ bool	topic(Serveur *serveur, Client *client, std::vector<std::string> &arguments
 {
 	int	rights;
 
-	if (client->getIs_auth() < 3)
+	if (client->getIs_auth() != COMPLET_AUTH)
 		return (0);
 	if (arguments.size() < 2)
 		return (client->sendMsg(ERR_NEEDMOREPARAMS(client->getNickname(), "TOPIC")));

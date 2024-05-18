@@ -5,7 +5,7 @@ bool ping(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 {
 	(void)serveur;
 
-	if (client->getIs_auth() < 3)
+	if (client->getIs_auth() != COMPLET_AUTH)
 		return (0);
 	if (arguments.size() == 0)
 		return (0);

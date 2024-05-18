@@ -1,29 +1,12 @@
 #include "commande.hpp"
 
-std::vector<std::string>	split_user(std::string &arg)
-{
-	size_t	pos = 0;
-	size_t	debut = 0;
-	std::string	str;
-	std::vector<std::string> list_user;
-
-	while (pos != std::string::npos)
-	{
-		debut = pos;
-		pos = arg.find(',', debut);
-		str = arg.substr(debut, pos - debut);
-		list_user.push_back(str);
-		while (arg[pos] == ',')
-			pos++;
-	}
-	return (list_user);
-}
 
 bool	kick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 {
 	int	rights;
+	std::string	base_msg;
 
-	if (client->getIs_auth() < 3)
+	if (client->getIs_auth() != COMPLET_AUTH)
 		return (0);
 	if (arguments.size() < 2)
 		return client->sendMsg(ERR_NEEDMOREPARAMS(client->getNickname(), "KICK"));
@@ -38,13 +21,16 @@ bool	kick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 	if (channel->getClientRights(rcasemape(client->getNickname())) < OPER)
 		return (client->sendMsg(ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getName())));
 
-	std::vector<std::string> list_user = split_user(arguments[1]);
-	std::string		reason("KICK ");
+	std::vector<std::string> list_user = split_virgule(arguments[1]);
+	base_msg = ":";
 
-	if (arguments.size() > 2)
-		reason.append(arguments[2]);
-	else
-		reason = "";
+	base_msg.append(client->getFullName());
+	base_msg.append(" KICK ");
+	base_msg.append(channel->getName());
+	base_msg.append(" ");
+	
+	std::string	msg_perso;
+
 	for (size_t i = 0; i < list_user.size(); i++)
 	{
 		rights = channel->getClientRights(rcasemape(list_user[i]));
@@ -52,9 +38,18 @@ bool	kick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 			client->sendMsg(ERR_USERNOTINCHANNEL(client->getNickname(), list_user[i], channel->getName()));
 		else if (rights <= OPER)
 		{
-			if (channel->remove_cli(rcasemape(list_user[i]), reason))
+			msg_perso = list_user[i];
+			if (arguments.size() > 2)
+				msg_perso.append(" :" + arguments[2]);
+			else
+				base_msg.append(" :" + client->getNickname());
+			if (channel->remove_cli(rcasemape(list_user[i]), base_msg + msg_perso))
 				serveur->remove_channel(cchan_name);
 		}
 	}
 	return (0);
 }
+
+
+// faire un message de base ou je vais ajouter le nom des gens kicke , modifier a chaque tour
+//declare des variable pour le nick et autre qui se repete

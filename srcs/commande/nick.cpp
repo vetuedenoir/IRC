@@ -39,7 +39,7 @@ bool	nick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 		return (0);
 	}
 	for (i = 0; i < len; i++)
-	{
+	{                                                                                                        
 		if (NICK_CHARACTERS.find(arguments[0][i]) == std::string::npos)
 		{
 			if (client->sendMsg(ERR_ERRONEUSNICKNAME(client->getHostname(), arguments[0])) == -1)
@@ -53,16 +53,15 @@ bool	nick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 			return (1);
 		return (0);
 	}
-	client->setNick(arguments[0]);
-	if (client->getIs_auth() > 3)
+	if (client->getIs_auth() == COMPLET_AUTH)
 	{
 		std::string msg(":");
-		msg = msg + SERVEUR_NAME + " new nickname " + arguments[0] + " sucesfully setup\r\n"; 
-		if (client->sendMsg(msg) == -1)
-			return (1);
+		msg += client->getFullName() + " NICK :" + arguments[0] + "\r\n";
+		return (client->sendMsg(msg));
 	}
-	else if (client->getIs_auth() == 1)
-		client->setIs_auth(2);
+	else if (NOT_AUTH_NICK(client->getIs_auth()))
+		client->setIs_auth(client->getIs_auth() + PLUS_NICK);
+	client->setNick(arguments[0]);
 	client->setFullName();
 	return (0);
 }

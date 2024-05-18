@@ -47,14 +47,15 @@ class Channel
 	bool			isModeSet(ChanMode mode);
 	bool			isInvited(std::string nick);
 
-	bool			sendMsg_toCli(std::string &msg);
-	bool			sendPrivMsg(std::string &msg, std::string &sender);
+	bool			sendMsg_toCli(const std::string &msg);
+	bool			sendPrivMsg(std::string &msg, std::string sender);
 
 	int				getClientRights(std::string nick);
 	std::string&	getTopic();
 	void			setClientRights(const std::string &nick, int rights);
 	void			setTopic(const std::string &topic);
 	bool			accepte_new_user(Client *client, const std::string &key);
+	void			add_Invite(Client *client);
 	Client*			searchBigBoss();
 	void			create_nameReply(Client *client);
 	bool			remove_cli(const std::string &nick, const std::string &reason);

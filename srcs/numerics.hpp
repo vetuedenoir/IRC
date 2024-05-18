@@ -27,7 +27,9 @@
 
 #define RPL_ISUPPORT(nickname) (std::string(":") )
 
-#define	RPL_TOPIC(nickname, channel, topic) (std::string(":") + SERVEUR_NAME + " 332 " + nickname + " " + channel + ":" + topic + "\r\n")
+#define	RPL_TOPIC(nickname, channel, topic) (std::string(":") + SERVEUR_NAME + " 332 " + nickname + " " + channel + " :" + topic + "\r\n")
+
+#define	RPL_INVITING(nickname, cible, channel) (std::string(":") + SERVEUR_NAME + " 341 " + nickname + " " + cible +  " " + channel + "\r\n")
 
 #define RPL_NAMREPLY(nickname, symbol, channel, list) (std::string(":") + SERVEUR_NAME + " 357 " + nickname + " " + symbole + " " + channel + " :" + list + "\r\n")
 
@@ -56,6 +58,8 @@
 #define ERR_USERNOTINCHANNEL(nickname, cible, channel) (std::string(":") + SERVEUR_NAME + " 441 " + nickname + " " + cible +  " " + channel + " :this user is not in the channel\r\n")
 
 #define ERR_NOTONCHANNEL(nickname, channel) (std::string(":") + SERVEUR_NAME + " 442 " + nickname + " " + channel + " :You're not in channel\r\n")
+
+#define ERR_USERONCHANNEL(nickname, cible, channel) (std::string(":") + SERVEUR_NAME + " 443 " + nickname + " " + cible +  " " + channel + " :this user is already channel\r\n")
 
 #define ERR_NEEDMOREPARAMS(nickname, command) (std::string(":") + SERVEUR_NAME + " 461 " + nickname + " " + command + " :Not enough parameters\r\n")
 

@@ -15,6 +15,15 @@
 
 #include "utils.hpp"
 
+#define	NOT_AUTH_NICK(level) (level != 1 && level != 5)
+
+#define	NOT_AUTH_USER(level) (level != 1 && level != 3)
+
+#define PLUS_PASS 1
+#define	PLUS_NICK 2
+#define	PLUS_USER 4
+#define	COMPLET_AUTH	7
+
 class Client
 {
 	std::string 		_username;

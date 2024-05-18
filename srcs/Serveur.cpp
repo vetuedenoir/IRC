@@ -320,3 +320,21 @@ void	Serveur::remove_channel(const std::string &chanName)
 	}
 }
 
+bool	Serveur::isChannel(std::string name_of_chan)
+{
+	if (_list_channel.find(name_of_chan) == _list_channel.end())
+		return (0);
+	return (1);
+}
+
+Client*	Serveur::getClientByName(std::string cli_name)
+{
+	std::map<int, Client *>::iterator	it;
+
+	for (it = _list_clients.begin(); it != _list_clients.end(); it++)
+	{
+		if (cli_name == it->second->getNickname())
+			return (it->second);
+	}
+	return (NULL);
+}

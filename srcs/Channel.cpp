@@ -57,7 +57,7 @@ bool	Channel::isInvited(std::string nick)
 	return (1);
 }
 
-bool	Channel::sendMsg_toCli(std::string &msg)
+bool	Channel::sendMsg_toCli(const std::string &msg)
 {
 	if (_founder.first != "")
 		_founder.second->sendMsg(msg);
@@ -67,9 +67,17 @@ bool	Channel::sendMsg_toCli(std::string &msg)
 	return (0);
 }
 
-bool	sendPrivMsg(std::string &msg, std::string &sender)
+bool	Channel::sendPrivMsg(std::string &msg, std::string sender)
 {
-	
+	if (_founder.first != sender)
+		_founder.second->sendMsg(msg);
+	std::map<std::string, Client *>::iterator it;
+	for (it = _my_clients.begin(); it != _my_clients.end(); it++)
+	{
+		if (it->first != sender)
+			it->second->sendMsg(msg);
+	}
+	return (0);
 }
 
 
@@ -167,7 +175,6 @@ bool	Channel::accepte_new_user(Client *client, const std::string &key)
 	_my_clients[rcasemape(client->getNickname())] = client;
 	client->addChan(_name);
 	setClientRights(rcasemape(client->getNickname()), NO);
-	client->sendMsg(":" + client->getNickname() + " JOIN " + _name + "\r\n");
 	if (isModeSet(TOPIC))
 		client->sendMsg(RPL_TOPIC(client->getNickname(), _name, _topic));
 	std::string joinmsg(":");
@@ -202,8 +209,7 @@ Client*			Channel::searchBigBoss()
 
 bool	Channel::remove_cli(const std::string &nick, const std::string &reason)
 {
-	std::string msg = nick + " " + _name + " :" + reason + "\r\n";
-	sendMsg_toCli(msg);
+	sendMsg_toCli(reason);
 
 
 	std::cout << "in remove client to channel " << nick <<std::endl;
@@ -223,6 +229,12 @@ bool	Channel::remove_cli(const std::string &nick, const std::string &reason)
 		return (1);
 	return (0);
 }
+
+void	Channel::add_Invite(Client *client)
+{
+	_invited.insert(std::pair<std::string, Client *>(rcasemape(client->getNickname()), client));
+}
+
 
 void	Channel::remove_invite(const std::string &nick)
 {

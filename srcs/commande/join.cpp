@@ -61,7 +61,7 @@ bool	create_channel(Serveur *serveur, Client *client, std::pair<std::string, std
 
 bool	join(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 {
-	if (client->getIs_auth() < 3)
+	if (client->getIs_auth() != COMPLET_AUTH)
 		return (0);
 	if (arguments.size() == 0)
 		return (client->sendMsg(ERR_NEEDMOREPARAMS(client->getNickname(), "JOIN")));

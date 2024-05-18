@@ -95,6 +95,9 @@ class Serveur
 
 	void	remove_client(int fd, std::string reason);
 	void	remove_channel(const std::string &chanName);
+	bool	isChannel(std::string name_of_chan);
+
+	Client	*getClientByName(std::string cli_name);
 };
 
 #endif

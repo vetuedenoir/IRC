@@ -24,6 +24,26 @@ void	run_error(std::string msg)
 	std::cerr << "Error: ";
 	perror(msg.c_str());
 }
+
+
+std::vector<std::string>	split_virgule(std::string &arg)
+{
+	size_t	pos = 0;
+	size_t	debut = 0;
+	std::string	str;
+	std::vector<std::string> list;
+
+	while (pos != std::string::npos)
+	{
+		debut = pos;
+		pos = arg.find(',', debut);
+		str = arg.substr(debut, pos - debut);
+		list.push_back(str);
+		while (arg[pos] == ',')
+			pos++;
+	}
+	return (list);
+}
 // int	main()
 // {
 // 	for (long i = 0; i < 100000000; i++)

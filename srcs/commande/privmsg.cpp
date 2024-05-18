@@ -18,7 +18,7 @@ bool privmsg(Serveur *serveur, Client *client, std::vector<std::string> &argumen
 	std::string cible;
 	std::string msg;
 
-	if (client->getIs_auth() != 3)
+	if (client->getIs_auth() != COMPLET_AUTH)
 		return (0);
 	if (arguments.size() == 0)
 		return (client->sendMsg(ERR_NEEDMOREPARAMS(client->getNickname(), "PRIVMSG")));
@@ -43,11 +43,11 @@ bool privmsg(Serveur *serveur, Client *client, std::vector<std::string> &argumen
 			return (client->sendMsg(ERR_CANNOTSENDTOCHAN(client->getNickname(), cible)));
 		else if (channel->getClientRights(rcasemape(client->getNickname())) == -1)
 			return (client->sendMsg(ERR_CANNOTSENDTOCHAN(client->getNickname(), cible)));
-		msg = ":" + client->getNickname() + "!" + client->getUsername() + "@" + SERVEUR_NAME;
+		msg = ":" + client->getFullName();
 		msg.append(" PRIVMSG " + cible + " :");
 		msg.append(arguments[1]);
 		msg.append("\r\n");
-		channel->sendMsg_toCli(msg);
+		channel->sendPrivMsg(msg, rcasemape(client->getNickname()));
 	}
 	// extraction de la cible dans le 1 er arg
 	// casemap de l cible

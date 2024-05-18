@@ -145,7 +145,7 @@ void	Client::setRights(std::string chanName, int rights)
 
 void	Client::setFullName()
 {
-	_fullName = _nickname + "~!" + _username + "@" + _host_serv;
+	_fullName = _nickname + "!" + _username + "@" + _host_serv;
 }
 
 
