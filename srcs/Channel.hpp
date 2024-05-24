@@ -27,6 +27,8 @@ class Channel
 	std::string	_topic;
 	size_t		_limite;
 
+	
+
 	std::pair<std::string, Client *> _founder;
 	std::map<std::string, Client *> _my_clients;
 	std::map<std::string, Client *> _invited;
@@ -52,6 +54,8 @@ class Channel
 
 	int				getClientRights(std::string nick);
 	std::string&	getTopic();
+	std::string&	getKey();
+	size_t&			getLimite();
 	void			setClientRights(const std::string &nick, int rights);
 	void			setTopic(const std::string &topic);
 	bool			accepte_new_user(Client *client, const std::string &key);

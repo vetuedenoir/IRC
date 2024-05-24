@@ -20,39 +20,19 @@ bool	nick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 	if (!client->getIs_auth())
 		return (0);
 	if (arguments.size() == 0)
-	{
-		if (client->sendMsg(ERR_NONICKNAMEGIVEN(client->getHost_serv())) == -1)
-			return (1);
-		return (0);
-	}
+		return (client->sendMsg(ERR_NONICKNAMEGIVEN(client->getHost_serv())));
 	len = arguments[0].size();
 	if (len > NICKLEN)
-	{
-		if (client->sendMsg(ERR_ERRONEUSNICKNAME(client->getHostname(), arguments[0])) == -1)
-			return (1);
-		return (0);
-	}
+		return (client->sendMsg(ERR_ERRONEUSNICKNAME(client->getHostname(), arguments[0])));
 	if (std::isdigit(arguments[0][0]))
-	{
-		if (client->sendMsg(ERR_ERRONEUSNICKNAME(client->getHostname(), arguments[0])) == -1)
-			return (1);
-		return (0);
-	}
+		return (client->sendMsg(ERR_ERRONEUSNICKNAME(client->getHostname(), arguments[0])));
 	for (i = 0; i < len; i++)
 	{                                                                                                        
 		if (NICK_CHARACTERS.find(arguments[0][i]) == std::string::npos)
-		{
-			if (client->sendMsg(ERR_ERRONEUSNICKNAME(client->getHostname(), arguments[0])) == -1)
-				return (1);
-			return (0);
-		}
+			return (client->sendMsg(ERR_ERRONEUSNICKNAME(client->getHostname(), arguments[0])));
 	}
 	if (verif_occurence(rcasemape(arguments[0]), serveur->getList_clients()))
-	{
-		if (client->sendMsg(ERR_NICKNAMEINUSE(client->getHost_serv(), arguments[0])) == -1)
-			return (1);
-		return (0);
-	}
+		return (client->sendMsg(ERR_NICKNAMEINUSE(client->getHost_serv(), arguments[0])));
 	if (client->getIs_auth() == COMPLET_AUTH)
 	{
 		std::string msg(":");

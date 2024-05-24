@@ -89,8 +89,18 @@ int		Channel::getClientRights(std::string nick)
 	if (it == _my_clients.end())
 		return (-1);
 	return (it->second->getRights(rcasemape(_name)));
-	
 }
+
+std::string&	Channel::getKey()
+{
+	return (_key);
+}
+
+size_t&		Channel::getLimite()
+{
+	return (_limite);
+}
+
 
 std::string&	Channel::getTopic()
 {
