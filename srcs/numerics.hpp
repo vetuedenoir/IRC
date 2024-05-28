@@ -27,6 +27,8 @@
 
 #define RPL_ISUPPORT(nickname) (std::string(":") )
 
+#define	RPL_CREATIONTIME(nickname, channel, creationtime) (std::string(":") + SERVEUR_NAME + " 329 " + nickname + " " + channel + " " + creationtime + "\r\n")
+
 #define	RPL_TOPIC(nickname, channel, topic) (std::string(":") + SERVEUR_NAME + " 332 " + nickname + " " + channel + " :" + topic + "\r\n")
 
 #define	RPL_INVITING(nickname, cible, channel) (std::string(":") + SERVEUR_NAME + " 341 " + nickname + " " + cible +  " " + channel + "\r\n")

@@ -26,7 +26,7 @@ void	run_error(std::string msg)
 }
 
 
-std::vector<std::string>	split_virgule(std::string &arg)
+std::vector<std::string>	split_vec(std::string &arg, char c)
 {
 	size_t	pos = 0;
 	size_t	debut = 0;
@@ -36,14 +36,31 @@ std::vector<std::string>	split_virgule(std::string &arg)
 	while (pos != std::string::npos)
 	{
 		debut = pos;
-		pos = arg.find(',', debut);
+		pos = arg.find(c, debut);
 		str = arg.substr(debut, pos - debut);
 		list.push_back(str);
-		while (arg[pos] == ',')
+		while (arg[pos] == c)
 			pos++;
 	}
 	return (list);
 }
+
+std::string uIntToString(size_t value)
+{
+    char buffer[11];
+
+    snprintf(buffer, sizeof(buffer), "%zu", value);
+    return std::string(buffer);
+}
+
+std::string longToString(long long value)
+{
+    char buffer[20];
+
+    snprintf(buffer, sizeof(buffer), "%lli", value);
+    return std::string(buffer);
+}
+
 // int	main()
 // {
 // 	for (long i = 0; i < 100000000; i++)

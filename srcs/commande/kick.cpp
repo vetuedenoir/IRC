@@ -21,7 +21,7 @@ bool	kick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 	if (channel->getClientRights(rcasemape(client->getNickname())) < OPER)
 		return (client->sendMsg(ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getName())));
 
-	std::vector<std::string> list_user = split_virgule(arguments[1]);
+	std::vector<std::string> list_user = split_vec(arguments[1], ',');
 	base_msg = ":";
 
 	base_msg.append(client->getFullName());

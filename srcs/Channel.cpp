@@ -5,7 +5,7 @@ Channel::Channel(std::string &name, Client *founder) : _name(name)
 	_founder.first = rcasemape(founder->getNickname());
 	_founder.second = founder;
 	_mode = NONE;
-
+	std::time(&_creation_time);
 }
 
 Channel::Channel(std::string &name, Client *founder, std::string &key) :_name(name), _key(key)
@@ -105,6 +105,11 @@ size_t&		Channel::getLimite()
 std::string&	Channel::getTopic()
 {
 	return (_topic);
+}
+
+time_t&	Channel::getCreationTime()
+{
+	return (_creation_time);
 }
 
 void	Channel::setClientRights(const std::string &nick, int rights)

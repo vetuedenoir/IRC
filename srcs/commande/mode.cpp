@@ -23,7 +23,7 @@ std::string	RPL_CHANNELMODEIS(std::string nickname, Channel *channel)
 		modestring.push_back('l');
 		if (parametre.size() != 0)
 			parametre.push_back(' ');
-		parametre.append(std::to_string(channel->getLimite()));
+		parametre.append(uIntToString(channel->getLimite()));
 	}
 	
 	msg.append(modestring);
@@ -35,9 +35,6 @@ std::string	RPL_CHANNELMODEIS(std::string nickname, Channel *channel)
 
 bool	mode(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 {
-	(void)serveur;
-	(void)client;
-	(void)arguments;
 
 	if (client->getIs_auth() != COMPLET_AUTH)
 		return (0);
@@ -50,9 +47,13 @@ bool	mode(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 		return (client->sendMsg(ERR_NOSUCHCHANNEL(client->getNickname(), arguments[0])));
 	if (arguments.size() < 2)
 	{
-		client->sendMsg(RPL_CHANNELMODEIS(client->getNickname(), channel)));
-		return (client->sendMsg(RPL_CREATIONTIME()));
+		client->sendMsg(RPL_CHANNELMODEIS(client->getNickname(), channel));
+		return (client->sendMsg(RPL_CREATIONTIME(client->getNickname(), channel->getName(), \
+			longToString(static_cast<long long>(channel->getCreationTime())))));
 	}
+	if (channel->getClientRights(rcasemape(client->getNickname())))
+		return (client->sendMsg(ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getName())));
+
 	
 
 	return (0);

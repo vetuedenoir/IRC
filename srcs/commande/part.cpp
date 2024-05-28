@@ -11,7 +11,7 @@ bool	part(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 		return (0);
 	if (arguments.size() < 1)
 		return (client->sendMsg(ERR_NEEDMOREPARAMS(nickname, "PART")));
-	std::vector<std::string> listOfChan = split_virgule(arguments[0]);	
+	std::vector<std::string> listOfChan = split_vec(arguments[0], ',');	
 
 	std::vector<std::string>::iterator it;
 	for (it = listOfChan.begin(); it != listOfChan.end(); it++)
