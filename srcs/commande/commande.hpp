@@ -2,6 +2,7 @@
 # define COMMANDE_HPP
 
 #include "../Serveur.hpp"
+#include <sstream>
 
 class Client;
 class Serveur;

@@ -35,12 +35,12 @@ void	Channel::setMode(ChanMode &mode)
 	_mode = mode;
 }
 
-void	Channel::addMode(ChanMode &mode)
+void	Channel::addMode(ChanMode mode)
 {
 	_mode = _mode | mode;
 }
 
-void	Channel::removeMode(ChanMode &mode)
+void	Channel::removeMode(ChanMode mode)
 {
 	_mode = static_cast<ChanMode>(static_cast<int>(_mode) & ~static_cast<int>(mode));
 }
@@ -117,12 +117,23 @@ void	Channel::setClientRights(const std::string &nick, int rights)
 	if (_founder.first == nick)
 		return (_founder.second->setRights(rcasemape(_name), rights));
 	std::map<std::string, Client *>::iterator it = _my_clients.find(nick);
-	it->second->setRights(rcasemape(_name), rights);
+	if (it != _my_clients.end())
+		it->second->setRights(rcasemape(_name), rights);
 }
 
 void	Channel::setTopic(const std::string &topic)
 {
 	_topic = topic.substr(0, TOPICLEN);
+}
+
+void	Channel::setKey(const std::string &key)
+{
+	_key = key;
+}
+
+void	Channel::setLimite(const size_t &limite)
+{
+	_limite = limite;
 }
 
 ChanMode operator| (ChanMode lhs, ChanMode rhs)
@@ -141,10 +152,10 @@ void	Channel::create_nameReply(Client *client)
 
 	std::string msg(":");
 	msg.append(SERVEUR_NAME);
-	msg.append(" 357 " + client->getNickname() + " = " + _name + " :");
+	msg.append(" 353 " + client->getNickname() + " = " + _name + " :");
 	size_msg = msg.size();
 	if (_founder.first != "")
-		name_list.append("~" + _founder.first);
+		name_list.append("@" + _founder.first);
 	it = _my_clients.begin();
 	while (1)
 	{
@@ -201,26 +212,26 @@ bool	Channel::accepte_new_user(Client *client, const std::string &key)
 	return (0);
 }
 
-Client*			Channel::searchBigBoss()
-{
-	if (_founder.second != NULL)
-		return _founder.second;
-	std::map<std::string, Client *>::iterator	it;
-	int			big_right = 0;
-	std::string	casename = rcasemape(_name);
+// Client*			Channel::searchBigBoss()
+// {
+// 	if (_founder.second != NULL)
+// 		return _founder.second;
+// 	std::map<std::string, Client *>::iterator	it;
+// 	int			big_right = 0;
+// 	std::string	casename = rcasemape(_name);
 
-	for (it = _my_clients.begin(); it != _my_clients.end(); it++)
-	{
-		if (big_right < it->second->getRights(casename))
-		{
-			big_right = it->second->getRights(casename);
-			if (big_right == OPER)
-				return it->second;
-		}
-	}
-	it = _my_clients.begin();
-	return it->second;
-}
+// 	for (it = _my_clients.begin(); it != _my_clients.end(); it++)
+// 	{
+// 		if (big_right < it->second->getRights(casename))
+// 		{
+// 			big_right = it->second->getRights(casename);
+// 			if (big_right == OPER)
+// 				return it->second;
+// 		}
+// 	}
+// 	it = _my_clients.begin();
+// 	return it->second;
+// }
 
 bool	Channel::remove_cli(const std::string &nick, const std::string &reason)
 {

@@ -6,7 +6,7 @@ bool	user(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 
 	if (!client->getIs_auth())
 		return (0);
-	else if (!NOT_AUTH_USER(client->getIs_auth()))
+	else if (AUTH_USER(client->getIs_auth()))
 		return  (client->sendMsg(ERR_ALREADYREGISTERED(client->getHost_serv())));
 	if (arguments.size() < 4)
 		return (client->sendMsg(ERR_NEEDMOREPARAMS(client->getHost_serv(), "USER")));

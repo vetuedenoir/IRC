@@ -33,7 +33,7 @@
 
 #define	RPL_INVITING(nickname, cible, channel) (std::string(":") + SERVEUR_NAME + " 341 " + nickname + " " + cible +  " " + channel + "\r\n")
 
-#define RPL_NAMREPLY(nickname, symbol, channel, list) (std::string(":") + SERVEUR_NAME + " 357 " + nickname + " " + symbole + " " + channel + " :" + list + "\r\n")
+#define RPL_NAMREPLY(nickname, symbol, channel, list) (std::string(":") + SERVEUR_NAME + " 353 " + nickname + " " + symbole + channel + " :" + list + "\r\n")
 
 #define RPL_ENDOFNAMES(nickname, channel) (std::string(":") + SERVEUR_NAME + " 366 " + nickname + " " + channel + " :End of /NAMES list\r\n")
 

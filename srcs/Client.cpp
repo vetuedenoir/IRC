@@ -94,7 +94,9 @@ const std::string &Client::getHost_serv() const
 
 int	Client::getRights(std::string chanName)
 {
-	return (_my_channel[chanName]);
+	if (_my_channel.find(chanName) != _my_channel.end())
+		return (_my_channel[chanName]);
+	return (-1);
 }
 
 size_t	Client::getSizeBuff() const

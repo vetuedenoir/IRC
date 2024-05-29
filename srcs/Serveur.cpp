@@ -163,7 +163,7 @@ void	print_message(message_t &msg)
 	if (msg.commande == "")
 		return ;
 	std::cout << "-------message---------------------------------" << std::endl;
-	//std::cout << msg.commande << "|" <<  std::endl;
+	std::cout << msg.commande << "|" <<  std::endl;
 	// for (size_t i = 0; i < msg.parametres.size(); i++)
 	// 	std::cout << "x " << msg.parametres[i] << "|" << std::endl;
 }

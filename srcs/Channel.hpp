@@ -44,8 +44,8 @@ class Channel
 
 	ChanMode&		getMode();
 	void			setMode(ChanMode &mode);
-	void			addMode(ChanMode &mode);
-	void			removeMode(ChanMode &mode);
+	void			addMode(ChanMode mode);
+	void			removeMode(ChanMode mode);
 	bool			isModeSet(ChanMode mode);
 	bool			isInvited(std::string nick);
 
@@ -60,6 +60,9 @@ class Channel
 
 	void			setClientRights(const std::string &nick, int rights);
 	void			setTopic(const std::string &topic);
+	void			setKey(const std::string &key);
+	void			setLimite(const size_t &limite);
+
 	bool			accepte_new_user(Client *client, const std::string &key);
 	void			add_Invite(Client *client);
 	Client*			searchBigBoss();

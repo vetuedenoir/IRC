@@ -1,3 +1,4 @@
+
 #ifndef CLIENT_HPP
 # define CLIENT_HPP
 
@@ -15,9 +16,9 @@
 
 #include "utils.hpp"
 
-#define	NOT_AUTH_NICK(level) (level != 1 && level != 5)
+#define	AUTH_NICK(level) (level != 1 && level != 5)
 
-#define	NOT_AUTH_USER(level) (level != 1 && level != 3)
+#define	AUTH_USER(level) (level != 1 && level != 3)
 
 #define PLUS_PASS 1
 #define	PLUS_NICK 2

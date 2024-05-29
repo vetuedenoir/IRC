@@ -37,11 +37,18 @@ bool	nick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 	{
 		std::string msg(":");
 		msg += client->getFullName() + " NICK :" + arguments[0] + "\r\n";
-		return (client->sendMsg(msg));
+		client->sendMsg(msg);
 	}
-	else if (NOT_AUTH_NICK(client->getIs_auth()))
+	else if (!AUTH_NICK(client->getIs_auth()))
+	{
 		client->setIs_auth(client->getIs_auth() + PLUS_NICK);
+		if (client->getIs_auth() == COMPLET_AUTH)
+			client->sendMsg(RPL_WELCOM(arguments[0]));
+	}
 	client->setNick(arguments[0]);
 	client->setFullName();
 	return (0);
 }
+
+
+//avertir les channel ou l on est present et modifier son nom partout

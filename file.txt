@@ -37,3 +37,5 @@ En résumé, votre serveur IRC doit être capable de gérer les erreurs de mani�
 sans s'arrêter complètement.
 Il doit être robuste, résilient et capable de fonctionner
 de manière fiable dans des conditions variées.
+
+probleme dans user, 1 er identification

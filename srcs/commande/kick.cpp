@@ -41,9 +41,7 @@ bool	kick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 			msg_perso = list_user[i];
 			if (arguments.size() > 2)
 				msg_perso.append(" :" + arguments[2]);
-			else
-				base_msg.append(" :" + client->getNickname());
-			if (channel->remove_cli(rcasemape(list_user[i]), base_msg + msg_perso))
+			if (channel->remove_cli(rcasemape(list_user[i]), base_msg + msg_perso + "\r\n"))
 				serveur->remove_channel(cchan_name);
 		}
 	}
