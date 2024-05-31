@@ -14,8 +14,8 @@ void init_passw(const std::string &pass)
 {
 	// bool	requirement[4] = {0};
 
-	// if (pass.size() < 6)
-	// 	throw "Erreur MDP: trop court, minimum 6 caracteres";
+	if (pass.size() < 1)
+	 	throw "Erreur MDP: trop court, minimum 6 caracteres";
 	if (pass.size() > 505)
 		throw "Erreur MDP: trop long, maximum 505 caracteres";
 	char	c;
@@ -63,6 +63,8 @@ int	main(int ac, char **av)
 	}
 	errno = 0;
 	std::signal(SIGINT, &sigint_handler);
+	std::signal(SIGQUIT, &sigint_handler);
+
 	try
 	{
 		init_passw(av[2]);	

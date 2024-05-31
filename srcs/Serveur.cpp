@@ -168,8 +168,8 @@ void	print_message(message_t &msg)
 		return ;
 	std::cout << "-------message---------------------------------" << std::endl;
 	std::cout << msg.commande << "|" <<  std::endl;
-	// for (size_t i = 0; i < msg.parametres.size(); i++)
-	// 	std::cout << "x " << msg.parametres[i] << "|" << std::endl;
+	for (size_t i = 0; i < msg.parametres.size(); i++)
+		std::cout << "x " << msg.parametres[i] << "|" << std::endl;
 }
 
 void	Serveur::handle_cmds(int i)
@@ -345,4 +345,9 @@ Client*	Serveur::getClientByName(std::string cli_name)
 			return (it->second);
 	}
 	return (NULL);
+}
+
+time_t&	Serveur::getRawtime()
+{
+	return (_raw_time);
 }

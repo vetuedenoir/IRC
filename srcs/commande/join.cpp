@@ -40,14 +40,16 @@ bool	create_channel(Serveur *serveur, Client *client, std::pair<std::string, std
 		client->sendMsg(ERR_TOMANYCHANNEL(client->getNickname(), arg.first));
 		return (1);
 	}
-	Channel *channel;
+	Channel *channel = NULL;
 	if (arg.second == "")
 		channel = new(std::nothrow) Channel(arg.first, client);
-	else
-		channel = new(std::nothrow) Channel(arg.first, client, arg.second);
 	if (!channel)
 	{
-		//client.sendMSG(ERROR);
+		std::string	msg(":");
+		msg.append(SERVEUR_NAME);
+		msg.append(" ERROR :Cannot create channel\r\n");
+		client->sendMsg(msg);
+
 		return (1);
 	}
 	serveur->addChannel(channel);

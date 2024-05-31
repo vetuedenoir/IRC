@@ -15,7 +15,12 @@ bool	user(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 	client->setUsername(std::string("~") + arguments[0].substr(0, USERLEN));
 	client->setIs_auth(client->getIs_auth() + PLUS_USER);
 	if (client->getIs_auth() == COMPLET_AUTH)
+	{
 		client->sendMsg(RPL_WELCOM(client->getNickname()));
+		client->sendMsg(RPL_YOURHOST(client->getNickname()));
+		client->sendMsg(RPL_CREATED(client->getNickname(), longToString(static_cast<long long>(serveur->getRawtime()))));
+		client->sendMsg(RPL_ISUPPORT(client->getNickname()));
+	}
 	client->setFullName();
 	return (0);
 }

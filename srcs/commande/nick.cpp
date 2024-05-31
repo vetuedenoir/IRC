@@ -62,7 +62,12 @@ bool	nick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 	{
 		client->setIs_auth(client->getIs_auth() + PLUS_NICK);
 		if (client->getIs_auth() == COMPLET_AUTH)
+		{
 			client->sendMsg(RPL_WELCOM(arguments[0]));
+			client->sendMsg(RPL_YOURHOST(arguments[0]));
+			client->sendMsg(RPL_CREATED(arguments[0], longToString(static_cast<long long>(serveur->getRawtime()))));
+			client->sendMsg(RPL_ISUPPORT(arguments[0]));
+		}
 	}
 	client->setNick(arguments[0]);
 	client->setFullName();

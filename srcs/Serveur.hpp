@@ -98,6 +98,7 @@ class Serveur
 	bool	isChannel(std::string name_of_chan);
 
 	Client	*getClientByName(std::string cli_name);
+	time_t&	getRawtime();
 };
 
 #endif
