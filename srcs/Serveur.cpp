@@ -89,17 +89,17 @@ void	Serveur::create_client()
 
 void	Serveur::remove_client(int fd, std::string reason)
 {
-	std::cout << "in remove client" << std::endl;
 	std::map<std::string, int> cliChannel = _list_clients[fd]->getMychannel();
 	std::map<std::string, int>::iterator cli_it;
 	std::map<std::string, Channel *>::iterator serv_it;
 	std::string nick = _list_clients[fd]->getNickname();
 	std::string cnick = rcasemape(nick);
+	std::string msg = ":" + _list_clients[fd]->getFullName() + " QUIT :" + reason + "\r\n";
 
 	for (cli_it = cliChannel.begin(); cli_it != cliChannel.end(); cli_it++)
 	{
 		serv_it = _list_channel.find(cli_it->first);
-		if (serv_it->second->remove_cli(nick, reason))
+		if (serv_it->second->remove_cli(nick, msg, false))
 		{
 			delete _list_channel[serv_it->first];
 			_list_channel.erase(serv_it->first);
@@ -110,6 +110,10 @@ void	Serveur::remove_client(int fd, std::string reason)
 		if (serv_it->second->isInvited(cnick))
 			serv_it->second->remove_invite(cnick);
 	}
+
+	msg = "ERROR :Closing link: " + _list_clients[fd]->getUsername() + "@" + _list_clients[fd]->getHost_cli();
+	msg += " " + reason + "\r\n";
+	_list_clients[fd]->sendMsg(msg);
 	delete _list_clients[fd];
 	epoll_ctl(_epoll_fd, EPOLL_CTL_DEL, fd, NULL);
 	_list_clients.erase(fd); 
@@ -248,12 +252,15 @@ Serveur::~Serveur()
 	std::map<int, Client *>::iterator 			cli_it;
 	std::map<std::string, Channel *>::iterator	chan_it;
 
-	if (_socket_fd > 0)
-		close(_socket_fd);
-	for (cli_it = _list_clients.begin(); cli_it !=_list_clients.end(); cli_it++)
-		delete cli_it->second;
 	for (chan_it = _list_channel.begin(); chan_it !=_list_channel.end(); chan_it++)
 		delete chan_it->second;
+	for (cli_it = _list_clients.begin(); cli_it !=_list_clients.end(); cli_it++)
+	{
+		cli_it->second->sendMsg("ERROR :Closing Serveur\r\n");
+		delete cli_it->second;
+	}
+	if (_socket_fd > 0)
+		close(_socket_fd);
 	if (_epoll_fd > 0)
 		close(_epoll_fd);
 }
@@ -334,7 +341,7 @@ Client*	Serveur::getClientByName(std::string cli_name)
 
 	for (it = _list_clients.begin(); it != _list_clients.end(); it++)
 	{
-		if (cli_name == it->second->getNickname())
+		if (cli_name == rcasemape(it->second->getNickname()))
 			return (it->second);
 	}
 	return (NULL);

@@ -6,6 +6,7 @@ bool	part(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 	std::string	msg;
 	Channel 	*channel;
 	std::string	nickname = client->getNickname();
+	std::string	rnick = rcasemape(nickname);
 
 	if (client->getIs_auth() != COMPLET_AUTH)
 		return (0);
@@ -33,6 +34,7 @@ bool	part(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 			msg.append(client->getFullName() + " PART " + *it + " :" + arguments[1] + "\r\n");
 		else
 			msg.append(client->getFullName() + " PART :" + *it + "\r\n");
+		channel->remove_cli(rnick, msg, true);
 	}
 
 	return (0);

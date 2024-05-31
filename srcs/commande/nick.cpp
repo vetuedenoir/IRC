@@ -12,6 +12,25 @@ bool	verif_occurence(std::string new_nick, std::map<int, Client *> &list_client)
 	return (0);
 }
 
+void	propagation(Client *client, Serveur *serveur, std::string &msg, std::string new_nick)
+{
+	Channel		*channel;
+	std::map<std::string, int>::iterator	it_chcl;
+	std::map<std::string, int>	chan_of_cli = client->getMychannel();
+	std::string		rnick =  rcasemape(client->getNickname());
+
+	for (it_chcl = chan_of_cli.begin(); it_chcl != chan_of_cli.end(); it_chcl++)
+	{
+		channel = serveur->getChan(it_chcl->first);
+		if (channel)
+		{
+			channel->sendPrivMsg(msg, rnick);
+			channel->change_nick(rnick, new_nick);
+		}
+	}
+	client->sendMsg(msg);
+}
+
 bool	nick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 {
 	size_t i = 0;
@@ -37,7 +56,7 @@ bool	nick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 	{
 		std::string msg(":");
 		msg += client->getFullName() + " NICK :" + arguments[0] + "\r\n";
-		client->sendMsg(msg);
+		propagation(client, serveur, msg, rcasemape(arguments[0]));
 	}
 	else if (!AUTH_NICK(client->getIs_auth()))
 	{
@@ -49,6 +68,3 @@ bool	nick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 	client->setFullName();
 	return (0);
 }
-
-
-//avertir les channel ou l on est present et modifier son nom partout

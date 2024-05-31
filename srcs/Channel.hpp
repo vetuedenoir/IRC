@@ -65,10 +65,11 @@ class Channel
 
 	bool			accepte_new_user(Client *client, const std::string &key);
 	void			add_Invite(Client *client);
-	Client*			searchBigBoss();
 	void			create_nameReply(Client *client);
-	bool			remove_cli(const std::string &nick, const std::string &reason);
+	bool			remove_cli(const std::string &nick, const std::string &reason, bool option);
 	void			remove_invite(const std::string &nick);
+	void			change_nick(const std::string &old_nick, const std::string &new_nick);
+
 };
 #endif
 

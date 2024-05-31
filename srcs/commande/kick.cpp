@@ -41,13 +41,10 @@ bool	kick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 			msg_perso = list_user[i];
 			if (arguments.size() > 2)
 				msg_perso.append(" :" + arguments[2]);
-			if (channel->remove_cli(rcasemape(list_user[i]), base_msg + msg_perso + "\r\n"))
+			channel->remove_invite(rcasemape(list_user[i]));
+			if (channel->remove_cli(rcasemape(list_user[i]), base_msg + msg_perso + "\r\n", true))
 				serveur->remove_channel(cchan_name);
 		}
 	}
 	return (0);
 }
-
-
-// faire un message de base ou je vais ajouter le nom des gens kicke , modifier a chaque tour
-//declare des variable pour le nick et autre qui se repete

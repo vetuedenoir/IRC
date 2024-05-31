@@ -201,7 +201,7 @@ bool	Channel::accepte_new_user(Client *client, const std::string &key)
 	_my_clients[rcasemape(client->getNickname())] = client;
 	client->addChan(_name);
 	setClientRights(rcasemape(client->getNickname()), NO);
-	if (isModeSet(TOPIC))
+	if (_topic != "")
 		client->sendMsg(RPL_TOPIC(client->getNickname(), _name, _topic));
 	std::string joinmsg(":");
 	joinmsg += client->getFullName() + " JOIN :" + _name + "\r\n";
@@ -212,35 +212,14 @@ bool	Channel::accepte_new_user(Client *client, const std::string &key)
 	return (0);
 }
 
-// Client*			Channel::searchBigBoss()
-// {
-// 	if (_founder.second != NULL)
-// 		return _founder.second;
-// 	std::map<std::string, Client *>::iterator	it;
-// 	int			big_right = 0;
-// 	std::string	casename = rcasemape(_name);
-
-// 	for (it = _my_clients.begin(); it != _my_clients.end(); it++)
-// 	{
-// 		if (big_right < it->second->getRights(casename))
-// 		{
-// 			big_right = it->second->getRights(casename);
-// 			if (big_right == OPER)
-// 				return it->second;
-// 		}
-// 	}
-// 	it = _my_clients.begin();
-// 	return it->second;
-// }
-
-bool	Channel::remove_cli(const std::string &nick, const std::string &reason)
+bool	Channel::remove_cli(const std::string &nick, const std::string &msg, bool option)
 {
-	sendMsg_toCli(reason);
-
-
 	std::cout << "in remove client to channel " << nick <<std::endl;
+
 	if (_founder.first == rcasemape(nick))
 	{
+		if (option)
+			_founder.second->sendMsg(msg);
 		_founder.second->quit_channel(rcasemape(_name));
 		_founder.first = "";
 		_founder.second = NULL;
@@ -248,11 +227,14 @@ bool	Channel::remove_cli(const std::string &nick, const std::string &reason)
 	else
 	{
 		Client *cli = _my_clients[rcasemape(nick)];
+		if (option)
+			cli->sendMsg(msg);
 		cli->quit_channel(rcasemape(_name));
 		_my_clients.erase(rcasemape(nick));
 	}
 	if (_founder.first == "" && _my_clients.size() == 0)
 		return (1);
+	sendMsg_toCli(msg);
 	return (0);
 }
 
@@ -265,4 +247,23 @@ void	Channel::add_Invite(Client *client)
 void	Channel::remove_invite(const std::string &nick)
 {
 	_invited.erase(nick);
+}
+
+void	Channel::change_nick(const std::string &old_nick, const std::string &new_nick)
+{
+	if (old_nick == _founder.first)
+		_founder.first = new_nick;
+	else
+	{
+		std::map<std::string, Client *>::iterator	it;
+		it = _my_clients.find(old_nick);
+		if (it != _my_clients.end())
+		{
+			Client *client = it->second;
+			_my_clients.erase(old_nick);
+			_invited.erase(old_nick);
+			_my_clients[new_nick] = client;
+			_invited[new_nick] = client;
+		}
+	}
 }
