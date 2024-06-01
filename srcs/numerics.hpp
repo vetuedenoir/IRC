@@ -25,7 +25,7 @@
 
 #define	RPL_YOURHOST(nickname) (std::string(":") + SERVEUR_NAME + " 002 " + nickname + " :Your host is " + SERVEUR_NAME + " version 1.0\r\n")
 
-#define	RPL_CREATED(nickname, datetime) (std::string(":") + SERVEUR_NAME + " 003 " + nickname + "this server was created " + datetime + "\r\n")
+#define	RPL_CREATED(nickname, datetime) (std::string(":") + SERVEUR_NAME + " 003 " + nickname + " this server was created " + datetime + "\r\n")
 
 #define RPL_ISUPPORT(nickname) (std::string(":") + SERVEUR_NAME + " 005 " + nickname + " CASEMAPPING=ascii CHANTYPES=# CHANLIMIT=#:10 CHANMODES=itkol NICKLEN=15 USERLEN=15 TOPICLEN=300 PARTLEN=300 KICKLEN=300 AWAYLEN=300 KEYLEN=32\r\n")
 

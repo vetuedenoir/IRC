@@ -65,7 +65,7 @@ bool	nick(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 		{
 			client->sendMsg(RPL_WELCOM(arguments[0]));
 			client->sendMsg(RPL_YOURHOST(arguments[0]));
-			client->sendMsg(RPL_CREATED(arguments[0], longToString(static_cast<long long>(serveur->getRawtime()))));
+			client->sendMsg(RPL_CREATED(arguments[0], serveur->getCreationTime()));
 			client->sendMsg(RPL_ISUPPORT(arguments[0]));
 		}
 	}

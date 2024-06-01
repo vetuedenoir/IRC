@@ -13,6 +13,8 @@ std::vector<std::pair<std::string, std::string> >	parse(std::string &chan, std::
 		pos = chan.find(',', debut);
 		str = chan.substr(debut, pos - debut);
 		chans_keys.push_back(std::pair<std::string, std::string>(str, ""));
+		if (pos == std::string::npos)
+			break ;
 		while (chan[pos] == ',')
 			pos++;
 	}
@@ -42,7 +44,7 @@ bool	create_channel(Serveur *serveur, Client *client, std::pair<std::string, std
 	}
 	Channel *channel = NULL;
 	if (arg.second == "")
-		channel = new(std::nothrow) Channel(arg.first, client);
+		channel = new(std::nothrow) Channel(arg.first.substr(0, CHANNELLEN), client);
 	if (!channel)
 	{
 		std::string	msg(":");
@@ -61,13 +63,27 @@ bool	create_channel(Serveur *serveur, Client *client, std::pair<std::string, std
 	return (0);
 }
 
+void	partAll(Serveur *serveur, Client *client)
+{
+	std::map<std::string, int>::iterator	it;
+	std::map<std::string, int>				list_of_chan;
+	std::vector<std::string>				arg;
+
+	list_of_chan = client->getMychannel();
+	for (it = list_of_chan.begin(); it != list_of_chan.end(); it++)
+	{
+		arg.assign(1, it->first);
+		part(serveur, client, arg);
+	}
+}
+
 bool	join(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 {
 	if (client->getIs_auth() != COMPLET_AUTH)
 		return (0);
 	if (arguments.size() == 0)
 		return (client->sendMsg(ERR_NEEDMOREPARAMS(client->getNickname(), "JOIN")));
-	if (arguments[0] == "0")
+	if (arguments[0] == "0" && arguments.size() == 1)
 		return (client->partAll(), 0);
 	if (arguments[0].size() < 2)
 		return (client->sendMsg(ERR_BADCHANMASK(arguments[0])));
@@ -76,7 +92,6 @@ bool	join(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 		liste = parse(arguments[0], arguments[1]);
 	else
 		liste = parse(arguments[0], "");
-
 	std::map<std::string, Channel *> list_channel = serveur->getList_channel();
 	std::map<std::string, Channel *>::iterator it;
 	std::string	chanName;
@@ -84,6 +99,11 @@ bool	join(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 	{
 		chanName = rcasemape(liste[i].first);
 		if (chanName.size() < 2 || chanName[0] != '#')
+		{
+			client->sendMsg(ERR_BADCHANMASK(liste[i].first));
+			continue ;
+		}
+		if (chanName.find(0x07) != std::string::npos || chanName.find(' ') != std::string::npos)
 		{
 			client->sendMsg(ERR_BADCHANMASK(liste[i].first));
 			continue ;

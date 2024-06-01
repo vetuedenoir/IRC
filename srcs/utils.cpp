@@ -39,6 +39,8 @@ std::vector<std::string>	split_vec(std::string &arg, char c)
 		pos = arg.find(c, debut);
 		str = arg.substr(debut, pos - debut);
 		list.push_back(str);
+		if (pos == std::string::npos)
+			break ;
 		while (arg[pos] == c)
 			pos++;
 	}

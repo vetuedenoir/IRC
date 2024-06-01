@@ -31,9 +31,9 @@ bool	part(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 		}
 		client->quit_channel(rchan);
 		if (arguments.size() > 1)
-			msg.append(client->getFullName() + " PART " + *it + " :" + arguments[1] + "\r\n");
+			msg = (":" + client->getFullName() + " PART " + *it + " :" + arguments[1].substr(0, PARTLEN) + "\r\n");
 		else
-			msg.append(client->getFullName() + " PART " + *it + "\r\n");
+			msg = (":" + client->getFullName() + " PART " + *it + "\r\n");
 		channel->remove_cli(rnick, msg, true);
 	}
 

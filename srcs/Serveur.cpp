@@ -53,6 +53,7 @@ Serveur::Serveur(const int &port, const std::string &password) : _port(port), _p
 	std::cout << _raw_time << std::endl;
 	ptm = localtime(&_raw_time);
 	_str_time = asctime(ptm);
+	_str_time.erase(_str_time.end() - 1);
 	std::cout << "debut du serveurt a " << _str_time << std::endl;
 	if (listen(_socket_fd, SIZE_QUEUE) == 1)
 		throw std::runtime_error("Error: Cannot listen to socket");
@@ -350,4 +351,9 @@ Client*	Serveur::getClientByName(std::string cli_name)
 time_t&	Serveur::getRawtime()
 {
 	return (_raw_time);
+}
+
+std::string&	Serveur::getCreationTime()
+{
+	return (_str_time);
 }

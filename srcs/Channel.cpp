@@ -1,24 +1,15 @@
 #include "Channel.hpp"
 
-Channel::Channel(std::string &name, Client *founder) : _name(name)
+Channel::Channel(std::string name, Client *founder) : _name(name)
 {
 	_founder.first = rcasemape(founder->getNickname());
 	_founder.second = founder;
 	_mode = NONE;
+	_limite = UINT32_MAX;
 	std::time(&_creation_time);
 }
 
-Channel::Channel(std::string &name, Client *founder, std::string &key) :_name(name), _key(key)
-{
-	_founder.first = rcasemape(founder->getNickname());
-	_founder.second = founder;
-	_mode = KEY;
-}
-
-Channel::~Channel()
-{
-
-}
+Channel::~Channel() {}
 
 std::string&	Channel::getName()
 {
@@ -155,7 +146,7 @@ void	Channel::create_nameReply(Client *client)
 	msg.append(" 353 " + client->getNickname() + " = " + _name + " :");
 	size_msg = msg.size();
 	if (_founder.first != "")
-		name_list.append("@" + _founder.first);
+		name_list.append("@" + _founder.second->getNickname());
 	it = _my_clients.begin();
 	while (1)
 	{
@@ -195,8 +186,18 @@ bool	Channel::accepte_new_user(Client *client, const std::string &key)
 	}
 	if (isModeSet(LIMITE))
 	{
-		if (_limite == _my_clients.size())
-			return (client->sendMsg(ERR_CHANNELISFULL(client->getNickname(), _name)));
+		std::cout << "limite = " << _limite << "et j ai " << _my_clients.size() << " client " << std::endl;
+		if (_founder.second != NULL)
+		{
+			std::cout << " have a king" << std::endl;
+			if (_limite <= _my_clients.size() + 1)
+				return (client->sendMsg(ERR_CHANNELISFULL(client->getNickname(), _name)));
+		}
+		else
+		{
+			if (_limite <= _my_clients.size())
+				return (client->sendMsg(ERR_CHANNELISFULL(client->getNickname(), _name)));
+		}
 	}
 	_my_clients[rcasemape(client->getNickname())] = client;
 	client->addChan(_name);

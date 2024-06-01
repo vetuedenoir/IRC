@@ -36,8 +36,7 @@ class Channel
 	ChanMode	_mode;
 
  public:
-	Channel(std::string &name, Client *founder);
-	Channel(std::string &name, Client *founder, std::string &key);
+	Channel(std::string name, Client *founder);
 	~Channel();
 
 	std::string&	getName();

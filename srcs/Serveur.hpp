@@ -99,6 +99,7 @@ class Serveur
 
 	Client	*getClientByName(std::string cli_name);
 	time_t&	getRawtime();
+	std::string&	getCreationTime();
 };
 
 #endif

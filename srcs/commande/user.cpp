@@ -18,7 +18,7 @@ bool	user(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 	{
 		client->sendMsg(RPL_WELCOM(client->getNickname()));
 		client->sendMsg(RPL_YOURHOST(client->getNickname()));
-		client->sendMsg(RPL_CREATED(client->getNickname(), longToString(static_cast<long long>(serveur->getRawtime()))));
+		client->sendMsg(RPL_CREATED(client->getNickname(), serveur->getCreationTime()));
 		client->sendMsg(RPL_ISUPPORT(client->getNickname()));
 	}
 	client->setFullName();

@@ -21,12 +21,12 @@ bool	topic(Serveur *serveur, Client *client, std::vector<std::string> &arguments
 	if (channel->isModeSet(TOPIC))
 	{
 		if (rights >= OPER)
-			channel->setTopic(arguments[1]);
+			channel->setTopic(arguments[1].substr(0, TOPICLEN));
 		else
 			return (client->sendMsg(ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getName())));
 	}
 	else
-		channel->setTopic(arguments[1]);
+		channel->setTopic(arguments[1].substr(0, TOPICLEN));
 	std::string	msg;
 	msg = ":" + client->getFullName();
 	msg.append(" TOPIC " + channel->getName() + " :" + channel->getTopic() + "\r\n");

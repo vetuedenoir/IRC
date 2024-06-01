@@ -76,6 +76,7 @@ std::string	remove_mode(Channel *channel, std::string &modestring, std::vector<s
 				if (channel->isModeSet(LIMITE))
 				{
 					channel->removeMode(LIMITE);
+					channel->setLimite(UINT32_MAX);
 					new_mode.push_back(modestring[i]);
 				}
 				break ;	
@@ -119,9 +120,9 @@ std::string	add_mode(Channel *channel, std::string &modestring, std::vector<std:
 				if (!channel->isModeSet(KEY))
 				{
 					channel->addMode(KEY);
-					channel->setKey(*it_arg);
+					channel->setKey((*it_arg).substr(0, KEYLEN));
 					new_mode.push_back(modestring[i]);
-					new_arg.append(" " + *it_arg);
+					new_arg.append(" " + (*it_arg).substr(0, KEYLEN));
 					it_arg++;
 				}
 				break ;
