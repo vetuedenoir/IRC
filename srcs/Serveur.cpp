@@ -22,7 +22,6 @@ void	Serveur::create_socket()
 
 void	Serveur::bind_socket()
 {
-	//std::memset(&_sock_addr, 0, sizeof(struct sockaddr_in));
 	std::cout << "port = " << _port << std::endl;
 	_sock_addr.sin_family = AF_INET;
 	_sock_addr.sin_addr.s_addr = INADDR_ANY;
@@ -70,10 +69,6 @@ void	Serveur::create_client()
 	client_fd = accept(_socket_fd, (struct sockaddr *)&cli_sock_addr, &addrlen);
 	if (client_fd == -1)
 		return (run_error("Cannot accept new connection: "));
-	// if (getsockname(client_fd, (struct sockaddr *)&cli_sock_addr, &addrlen))
-	// 	return (run_error("Error: getsockname"));
-	if (fcntl(client_fd, F_SETFL, fcntl(client_fd, F_GETFL, 0) | O_NONBLOCK) == -1)
-		return (close(client_fd), run_error("Cannot accept new connection: "));
 	_event.events = EPOLLIN;
 	_event.data.fd = client_fd;
 	if (epoll_ctl(_epoll_fd, EPOLL_CTL_ADD, client_fd, &_event) == -1)
@@ -120,11 +115,12 @@ void	Serveur::remove_client(int fd, std::string reason)
 	_list_clients.erase(fd); 
 }
 
-message_t	Serveur::parse_buff(const std::string &buffer, size_t &debut, size_t posn, size_t posr)
-{
 	//identifier les element de la commande (cmds et les parametres)
 	// et les decouper 
 	//il peut y avoir plusieur commande et une commande incomplete
+
+message_t	Serveur::parse_buff(const std::string &buffer, size_t &debut, size_t posn, size_t posr)
+{
 	message_t	msg;
 	size_t		limite;
 	size_t		pos;
@@ -163,15 +159,15 @@ message_t	Serveur::parse_buff(const std::string &buffer, size_t &debut, size_t p
 	return (msg);
 }
 
-void	print_message(message_t &msg)
-{
-	if (msg.commande == "")
-		return ;
-	std::cout << "-------message---------------------------------" << std::endl;
-	std::cout << msg.commande << "|" <<  std::endl;
-	for (size_t i = 0; i < msg.parametres.size(); i++)
-		std::cout << "x " << msg.parametres[i] << "|" << std::endl;
-}
+// void	print_message(message_t &msg)
+// {
+// 	if (msg.commande == "")
+// 		return ;
+// 	std::cout << "-------message---------------------------------" << std::endl;
+// 	std::cout << msg.commande << "|" <<  std::endl;
+// 	for (size_t i = 0; i < msg.parametres.size(); i++)
+// 		std::cout << "x " << msg.parametres[i] << "|" << std::endl;
+// }
 
 void	Serveur::handle_cmds(int i)
 {
@@ -198,7 +194,6 @@ void	Serveur::handle_cmds(int i)
 		if (!client->setInput_buf(client->getInput_buf() + buffer))
 		{
 			const std::string input = client->getInput_buf();
-			//std::cout << client->getInput_buf();
 			size_t		posn = input.find('\n');
 			size_t		posr = input.find('\r');
 			size_t		debut = 0;
@@ -217,7 +212,6 @@ void	Serveur::handle_cmds(int i)
 					return ;
 				posn = input.find('\n', debut);
 				posr = input.find('\r', debut);
-				print_message(msg);
 			}
 			client->clearBuf();
 		}

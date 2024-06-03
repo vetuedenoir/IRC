@@ -60,7 +60,7 @@ bool	Channel::sendMsg_toCli(const std::string &msg)
 
 bool	Channel::sendPrivMsg(std::string &msg, std::string sender)
 {
-	if (_founder.first != sender)
+	if (_founder.first != sender && _founder.first != "")
 		_founder.second->sendMsg(msg);
 	std::map<std::string, Client *>::iterator it;
 	for (it = _my_clients.begin(); it != _my_clients.end(); it++)
@@ -147,8 +147,14 @@ void	Channel::create_nameReply(Client *client)
 	size_msg = msg.size();
 	if (_founder.first != "")
 		name_list.append("@" + _founder.second->getNickname());
+	if (_my_clients.empty())
+	{
+		client->sendMsg(msg + name_list + "\r\n");
+		client->sendMsg(RPL_ENDOFNAMES(client->getNickname(), _name));
+		return ;
+	}
 	it = _my_clients.begin();
-	while (1)
+	while (it != _my_clients.end())
 	{
 			nick = it->second->getNickname();
 			if (size_msg + name_list.size() + nick.size() > 508)

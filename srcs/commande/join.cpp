@@ -60,21 +60,8 @@ bool	create_channel(Serveur *serveur, Client *client, std::pair<std::string, std
 	std::string joinmsg(":");
 	joinmsg += client->getFullName() + " JOIN :" + channel->getName() + "\r\n";
 	channel->sendMsg_toCli(joinmsg);
+	channel->create_nameReply(client);
 	return (0);
-}
-
-void	partAll(Serveur *serveur, Client *client)
-{
-	std::map<std::string, int>::iterator	it;
-	std::map<std::string, int>				list_of_chan;
-	std::vector<std::string>				arg;
-
-	list_of_chan = client->getMychannel();
-	for (it = list_of_chan.begin(); it != list_of_chan.end(); it++)
-	{
-		arg.assign(1, it->first);
-		part(serveur, client, arg);
-	}
 }
 
 bool	join(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
@@ -83,8 +70,6 @@ bool	join(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 		return (0);
 	if (arguments.size() == 0)
 		return (client->sendMsg(ERR_NEEDMOREPARAMS(client->getNickname(), "JOIN")));
-	if (arguments[0] == "0" && arguments.size() == 1)
-		return (client->partAll(), 0);
 	if (arguments[0].size() < 2)
 		return (client->sendMsg(ERR_BADCHANMASK(arguments[0])));
 	std::vector<std::pair<std::string, std::string> > liste;
