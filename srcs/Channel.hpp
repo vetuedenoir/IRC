@@ -27,7 +27,7 @@ class Channel
 	std::string	_topic;
 	size_t		_limite;
 
-	time_t	_creation_time;
+	time_t		_creation_time;
 
 	std::pair<std::string, Client *> _founder;
 	std::map<std::string, Client *> _my_clients;
@@ -40,7 +40,6 @@ class Channel
 	~Channel();
 
 	std::string&	getName();
-
 	ChanMode&		getMode();
 	void			setMode(ChanMode &mode);
 	void			addMode(ChanMode mode);

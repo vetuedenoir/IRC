@@ -6,7 +6,6 @@ Client *verif_occ(std::string cible, std::map<int, Client *> &list_client)
 
 	for (it = list_client.begin(); it != list_client.end(); it++)
 	{
-		std::cout << "verif > " << cible << " == " << rcasemape(it->second->getNickname()) << std::endl;
 		if (cible == rcasemape(it->second->getNickname()))
 			return (it->second);
 	}
@@ -49,12 +48,5 @@ bool privmsg(Serveur *serveur, Client *client, std::vector<std::string> &argumen
 		msg.append("\r\n");
 		channel->sendPrivMsg(msg, rcasemape(client->getNickname()));
 	}
-	// extraction de la cible dans le 1 er arg
-	// casemap de l cible
-	// identifier si c est un channel ou un nick
-	// chercher si le nick existe
-	//  concatener les arguments
-	//  envoyer le message
-	// verifier les droit etc ...
 	return (0);
 }

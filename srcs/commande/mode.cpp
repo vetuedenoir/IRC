@@ -93,7 +93,7 @@ std::string	add_mode(Channel *channel, std::string &modestring, std::vector<std:
 	std::stringstream	ss;
 	std::string			new_mode;
 	std::string			new_arg;
-	size_t				lim;
+	int					lim;
 
 	new_mode.push_back(modestring[0]);
 	for (size_t i = 1; i < modestring.size(); i++)
@@ -143,10 +143,11 @@ std::string	add_mode(Channel *channel, std::string &modestring, std::vector<std:
 				ss << *it_arg;
 				if ((ss >> lim))
 				{
-					if (lim > 0 && lim != channel->getLimite())
+
+					if (lim > 0 && lim != static_cast<int>(channel->getLimite()))
 					{
 						channel->addMode(LIMITE);
-						channel->setLimite(lim);
+						channel->setLimite(static_cast<unsigned int>(lim));
 						new_mode.push_back(modestring[i]);
 						new_arg.append(" " + *it_arg);
 					}

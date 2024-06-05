@@ -10,14 +10,12 @@ Client::Client(int sock_fd, struct sockaddr_in addr) : _sock_fd(sock_fd)
 	_nickname = "_?_";
 	_username = "_?_";
 	_adresse_ip = inet_ntoa(addr.sin_addr);
-	std::cout << "adresse ip >>>> " << _adresse_ip << std::endl;
 	ad = inet_addr(_adresse_ip.c_str());
 	host = gethostbyaddr((const char *)&ad, sizeof(struct in_addr), AF_INET);
 	if (host == NULL)
 		_host_cli = _adresse_ip;
 	else
 		_host_cli = host->h_name;
-	std::cout << "hostname du client >>> " << _host_cli << std::endl;
 	memset(&addr, 0, addrlen);
 	if (getsockname(_sock_fd, (struct sockaddr *)&addr, &addrlen))
 	 	run_error("Error: getsockname");
@@ -30,9 +28,6 @@ Client::Client(int sock_fd, struct sockaddr_in addr) : _sock_fd(sock_fd)
 		_host_serv = _adresse_ip;
 	else
 		_host_serv = host->h_name;
-
-	std::time(&_time_connection);
-	_time_last_msg = _time_connection;
 	_is_auth = false;
 }
 
@@ -55,16 +50,6 @@ std::string &Client::getNickname()
 const int &Client::getSock_fd() const
 {
 	return _sock_fd;
-}
-
-const time_t &Client::getTime_connection() const
-{
-	return _time_connection;
-}
-
-const time_t &Client::getTime_last_msg() const
-{
-	return _time_last_msg;
 }
 
 const std::string &Client::getAdresse_ip() const
@@ -171,11 +156,6 @@ int Client::sendMsg(const std::string &msg)
 	return (0);
 }
 
-void	Client::partAll()
-{
-	//quit tout les channel;
-}
-
 int		Client::getNumsChan()
 {
 	return _my_channel.size();
@@ -196,5 +176,4 @@ bool	Client::inChan(const std::string &chan)
 void Client::quit_channel(std::string chanName)
 {
 	_my_channel.erase(chanName);
-	std::cout << "moi " << _nickname << " has quit " << chanName << std::endl;
 }

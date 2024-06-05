@@ -1,4 +1,4 @@
-#pragma ONCE
+#pragma once
 
 #include <string>
 #include "Bot.hpp"
@@ -9,11 +9,11 @@
 
 class Joueur
 {
-	int			_fd;
-	int			_status_partie;
+	int				_fd;
+	int				_status_partie;
 	std::string		_nick;
 	unsigned int	_nbcoup;
-	unsigned int	_secret_number;
+	int				_secret_number;
 
  public:
 	Joueur (std::string &nick, int fd);
@@ -21,12 +21,11 @@ class Joueur
 
 	std::string&	getNick();
 	unsigned int&	getNbcoup();
-	unsigned int&	getNombre_mystere();
-	int&	getStatus_partie();
+	int&			getNombre_mystere();
+	int&			getStatus_partie();
+	void			setStatus_partie(int status);
+	void			set_secret_num(int secret_number);
 
 	void			reset_partie();
-	int				the_game(int& guess);
-
-
-
+	int				the_game(int guess);
 };

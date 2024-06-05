@@ -12,7 +12,13 @@ SRC =	main.cpp Serveur.cpp Client.cpp  Channel.cpp utils.cpp
 SRC_CMD =	cap.cpp error.cpp invite.cpp join.cpp kick.cpp mode.cpp nick.cpp\
 			part.cpp pass.cpp privmsg.cpp ping.cpp quit.cpp topic.cpp user.cpp
 
-SRC_BONUS = 
+SRC_BONUS = Bot.cpp Joueur.cpp
+
+BONUS_DIR = ./bonus/
+SRCS_BONUS = $(addprefix $(BONUS_DIR), $(SRC_BONUS))
+OBJDIR_BONUS = ./obj_bonus/
+OBJ_BONUS = $(addprefix $(OBJDIR_BONUS), $(notdir $(SRC_BONUS:.cpp=.o)))
+DEPS_BONUS = $(addprefix $(OBJ_BONUS), $(notdir $(SRCS_BONUS:.cpp=.d)))
 
 SRC_DIR = ./srcs/
 SRCS = $(addprefix $(SRC_DIR), $(SRC))
@@ -32,8 +38,28 @@ DEPS += $(DEPS_CMD)
 
 all: $(NAME)
 
+bonus:	$(BONUS)
+
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
+
+# $(BONUS): $(OBJ_BONUS)
+# 	$(CXX) $(CXXFLAGS) -o $(BONUS) $(OBJS)
+
+# $(OBJDIR_BONUS)%.o: $(SRCS_BONUS)%.cpp | $(OBJDIR_BONUS)
+# 	$(CXX) $(CXXFLAGS) -o $(BONUS) $(OBJS)
+
+# $(BONUS_DIR):
+# 	mkdir -p $(BONUS_DIR)
+
+$(BONUS): $(OBJ_BONUS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+$(OBJDIR_BONUS)%.o: $(BONUS_DIR)%.cpp | $(OBJDIR_BONUS)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(OBJDIR_BONUS):
+	mkdir -p $@
 
 -include $(DEPS)
 
@@ -47,11 +73,12 @@ $(OBJ_DIR):
 clean:
 	@echo "objet = $(OBJS)"
 	$(RM) $(OBJ_DIR)
+	$(RM) $(OBJDIR_BONUS)
 
 fclean: clean
-	$(RM) $(NAME)
+	$(RM) $(BONUS) $(NAME)
 
 re: fclean
 	make -j
 
-.PHONY: all clean fclean re
+.PHONY: all bonus clean fclean re

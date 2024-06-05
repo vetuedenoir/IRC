@@ -62,20 +62,3 @@ std::string longToString(long long value)
     snprintf(buffer, sizeof(buffer), "%lli", value);
     return std::string(buffer);
 }
-
-// int	main()
-// {
-// 	for (long i = 0; i < 100000000; i++)
-// 	try
-// 	{
-// 		std::string str(10, 'a');
-// 		casemape(str);
-// 		// Casemape(str, str.size());
-// 	}
-// 	catch(const std::exception& e)
-// 	{
-// 		exit(1);
-// 	}
-// 	return 0;
-
-// }

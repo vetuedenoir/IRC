@@ -81,7 +81,7 @@ class Serveur
 	void	set_commande();
 
  public:
-	// long	;
+
 	Serveur(const int &port, const std::string &password_);
 	~Serveur();
 	void	run_serveur();

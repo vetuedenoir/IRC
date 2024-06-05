@@ -1,15 +1,30 @@
 #include "Bot.hpp"
 
+static int g_signal = 0;
+
+void	sigint_handler(int signo)
+{
+	(void)signo;
+	g_signal = 1;
+}
+
+Bot::Bot(std::string pass) : _pass(pass)
+{
+}
+
+Bot::~Bot()
+{
+}
+
 void send_command(int sockfd, const std::string cmd)
 {
     send(sockfd, cmd.c_str(), cmd.size(), 0);
 }
 
-message_t	parse_buff(const std::string &buffer)
+message_t	Bot::parse_buff(const std::string &buffer)
 {
 
 	message_t	msg;
-	size_t		limite;
 	size_t		pos;
 	size_t		posr;
 	size_t		debut = 0;
@@ -23,24 +38,25 @@ message_t	parse_buff(const std::string &buffer)
 		while (buffer[pos] == ' ')
 			pos++;
 		debut = pos;
-		msg.commande =buffer.substr(debut, pos - debut);
+		pos = buffer.find(' ', debut);
+		msg.commande = buffer.substr(debut, pos - debut);
 	}
 	else
 		msg.commande = buffer.substr(debut, pos - debut);
 	while (buffer[pos] == ' ')
 		pos++;
 	debut = pos;
-	while (debut < limite)
+	while (debut < posr)
 	{
 		if (buffer[debut] == ':')
 		{
-			msg.parametres.push_back(buffer.substr(debut + 1, limite - debut - 1));
-			debut = limite;
+			msg.parametres.push_back(buffer.substr(debut + 1, posr - debut - 1));
+			debut = posr;
 			break ;
 		}
 		pos = buffer.find(' ', debut);
-		if (limite < pos)
-			pos = limite;
+		if (posr < pos)
+			pos = posr;
 		msg.parametres.push_back(buffer.substr(debut, pos - debut));
 		while (buffer[pos] == ' ')
 			pos++;
@@ -49,7 +65,7 @@ message_t	parse_buff(const std::string &buffer)
 	return (msg);
 }
 
-std::string	extracte_nick(std::string &source)
+std::string	Bot::extracte_nick(std::string &source)
 {
 	size_t	pos;
 	std::string	nick;
@@ -63,88 +79,114 @@ std::string	extracte_nick(std::string &source)
 	return (nick);
 }
 
-int	 is_digit(char *buffer)
+int	 Bot::is_digit(const char *buffer)
 {
 	int i = 0;
 	while (buffer[i])
 	{
 		if (!isdigit(buffer[i]))
-			return 0;
+			return (0);
 		i++;
 	}
 	return (1);
 }
 
-	// snprintf(buffer, sizeof(buffer), "PRIVMSG %s :I have chosen a number between 1 and 100. Try to guess it!\r\n", NICK);
-	// send_command(sockfd, buffer);
-// if (strstr(buffer, "PRIVMSG"))
-// {
-// 	char *msg_start = strstr(buffer, " :") + 2;
-// 	int guess = atoi(msg_start);
-
-
-void loop_bot(int sockfd)
+void	Bot::print_message(message_t &msg)
 {
-    srand(time(NULL));
-    int secret_number = rand() % 100 + 1;
-    char buffer[BUFSIZ + 1];
+	if (msg.commande == "")
+		return ;
+	std::cout << "-------message---------------------------------" << std::endl;
+	std::cout << msg.source << "|" << std::endl;
+	std::cout << msg.commande << "|" <<  std::endl;
+	for (size_t i = 0; i < msg.parametres.size(); i++)
+		std::cout << "x " << msg.parametres[i] << "|" << std::endl;
+}
+
+void Bot::process_command(message_t msg, int sockfd)
+{
 	std::string	nick_of_sender;
-	std::map<std::string, Joueur *>	list_joueur;
+    int 		secret_number;
 
-    while (true)
+	nick_of_sender = extracte_nick(msg.source);
+	if (nick_of_sender == "")
+		return ;
+	std::map<std::string, Joueur >::iterator it = list_joueur.find(nick_of_sender);
+	if (it != list_joueur.end())
 	{
-        memset(buffer, 0, SIZE_BUFF);
-        int n = read(sockfd, buffer, SIZE_BUFF);
-        if (n <= 0)
-		{
-            break;
-        }
-        buffer[n] = '\0';
-		message_t msg = parse_buff(buffer);
-		if (msg.commande == "ERROR" || msg.commande == "432")
-		{
-			// 432 c est le rpl de eroneous nickname et Error sa veut dire que le serveur et casser
-			std::cout << buffer ;
+		if (msg.parametres.size() < 1)
 			return ;
-		}
-		if (msg.commande == "PRIVMSG")
+		if (it->second.getStatus_partie() == ENCOURS)
 		{
-			nick_of_sender = extracte_nick(msg.source);
-			if (nick_of_sender == "")
-				continue ;
-			if (list_joueur.find(nick_of_sender) != list_joueur.end())
+			if (is_digit(msg.parametres[1].c_str()) == 0)
+				send_command(sockfd, "PRIVMSG " + nick_of_sender + " : Please give me a number between 0 and 500\r\n");
+			else if (it->second.the_game(atoi(msg.parametres[1].c_str())) == FINI)
+				list_joueur.erase(it);
+		}
+	}
+	else
+	{
+		if (msg.parametres.size() > 1 && (msg.parametres[1].find("game") != std::string::npos || msg.parametres[1].find("jeu")!= std::string::npos ||
+			(msg.parametres[1].find("GAME") != std::string::npos  || msg.parametres[1].find("JEU") != std::string::npos )))
+		{
+			list_joueur.insert(std::make_pair(nick_of_sender, Joueur(nick_of_sender, sockfd)));
+			std::map<std::string, Joueur>::iterator it = list_joueur.find(nick_of_sender);
+			if (it != list_joueur.end())
 			{
-				//le jeu
-				//et remove
+				it->second.setStatus_partie(ENCOURS);
+				secret_number = rand() % 500 + 1;
+				it->second.set_secret_num(secret_number);
 			}
-			else
-			{
-				Joueur *joueur = new(std::nothrow) Joueur(nick_of_sender, sockfd);
-				if (!joueur)
-				{
-					send();
-					continue ;
-				}
-				list_joueur[nick_of_sender] = joueur;
-				
-
-			}
-
-			
+			send_command(sockfd, "PRIVMSG " + nick_of_sender + " : Guess a number between 0 and 500\r\n");
 		}
 		else
-			continue ;
+			send_command(sockfd, "PRIVMSG " + nick_of_sender + " : Send game or jeu if you want to play\r\n");
+	}
+}
 
-		//gerer le control C
-		//parsing du buffer split au espace la source, cmd , arg
-		//verifie si c est bien un privmsg sinon erreur ou ignore
-		//identifier le nick de l envoyeur
-		//verifier si joueur existe dans notre liste de joueur si oui on continue la partie sinon on la commence
-		//si il a gangne, on le suprime de la liste des joueur ou on lui propose de recommence
-		
-        std::cout << buffer;
+void Bot::loop_bot(int sockfd)
+{
+    srand(time(NULL));
+    char buffer[BUFSIZ + 1];
+	
+    while (!g_signal)
+	{
+		fd_set read_fds;
+        FD_ZERO(&read_fds);
+        FD_SET(sockfd, &read_fds);
 
-    }
+        // Définir un délai d'attente pour la fonction select
+        struct timeval timeout;
+        timeout.tv_sec = 1; // 1 seconde
+        timeout.tv_usec = 0;
+
+        // Utiliser select pour attendre sur la socket et le signal de contrôle C
+        int ret = select(sockfd + 1, &read_fds, NULL, NULL, &timeout);
+        if (ret == -1)
+		{
+            perror("select");
+            break ;
+        }
+		else if (ret > 0)
+		{
+            // Des données sont disponibles sur la socket
+            if (FD_ISSET(sockfd, &read_fds))
+			{
+				memset(buffer, 0, SIZE_BUFF);
+				int n = recv(sockfd, buffer, SIZE_BUFF, 0);
+				if (n <= 0)
+					break ;
+				buffer[n] = '\0';
+				message_t msg = parse_buff(buffer);
+				if (msg.commande == "ERROR" || msg.commande == "433")
+				{
+					std::cout << buffer ;
+					break ;
+				}
+				if (msg.commande == "PRIVMSG")
+					process_command(msg, sockfd);
+    		}
+		}	
+	}
 }
 
 uint16_t	init_port(const std::string &strport)
@@ -164,7 +206,7 @@ uint16_t	init_port(const std::string &strport)
 	return (port);
 }
 
-std::string init_passw(const std::string &pass)
+std::string	init_passw(const std::string &pass)
 {
 	if (pass.size() < 1)
 	 	throw "Erreur MDP: trop court, minimum 6 caracteres";
@@ -182,17 +224,19 @@ std::string init_passw(const std::string &pass)
 
 int main(int ac, char **av)
 {
-    int port;
-    int sockfd;
-    std::string pass;
-    struct sockaddr_in serv_addr;
-    struct hostent *server = NULL;
+    int					port;
+    int					sockfd;
+    std::string			pass;
+    struct sockaddr_in	serv_addr;
+    struct hostent		*server = NULL;
 
     if (ac != 3)
     {
         std::cerr << "Error: Utilisation: Bot <port <password>" << std::endl;
         return (1);
     }
+	std::signal(SIGINT, &sigint_handler);
+	std::signal(SIGQUIT, &sigint_handler);
     try
 	{
 		pass = init_passw(av[2]);
@@ -202,7 +246,6 @@ int main(int ac, char **av)
 		std::cerr << e << '\n';
 		return (1);
 	}
-
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
 	{
@@ -225,11 +268,13 @@ int main(int ac, char **av)
         std::cerr << "ERROR connecting" << std::endl;
         return 1;
     }
+	
+	Bot bot(pass);
 	send_command(sockfd, "PASS " + pass + " \r\n");
     send_command(sockfd, "NICK " NICK "\r\n");
-    send_command(sockfd, "USER " USER "\r\n");
+	send_command(sockfd, "USER " USER "\r\n");
 
-    loop_bot(sockfd);
+    bot.loop_bot(sockfd);
 
     close(sockfd);
     return 0;

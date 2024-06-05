@@ -21,6 +21,3 @@ bool	pass(Serveur *serveur, Client *client, std::vector<std::string> &arguments)
 	else
 		return (client->sendMsg(ERR_ALREADYREGISTERED(client->getHost_serv())));
 }
-
-
-// appeler la commande error si je close la connection. mettre un message approprie

@@ -221,8 +221,6 @@ bool	Channel::accepte_new_user(Client *client, const std::string &key)
 
 bool	Channel::remove_cli(const std::string &nick, const std::string &msg, bool option)
 {
-	std::cout << "in remove client to channel " << nick <<std::endl;
-
 	if (_founder.first == rcasemape(nick))
 	{
 		if (option)

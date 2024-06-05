@@ -9,13 +9,13 @@
 
 
 
-void	casemape(std::string &str);
+void		casemape(std::string &str);
 std::string	rcasemape(const std::string &str);
-void	run_error(std::string msg);
+void		run_error(std::string msg);
 
 std::vector<std::string>	split_vec(std::string &arg, char c);
-std::string uIntToString(size_t value);
 
-std::string longToString(long long value);
+std::string 			uIntToString(size_t value);
+std::string 			longToString(long long value);
 
 #endif

@@ -32,8 +32,6 @@ class Client
 	std::string			_fullName;
 
 	const int			_sock_fd;
-	time_t				_time_connection;
-	time_t				_time_last_msg;
 	std::string			_adresse_ip;
 	std::string			_host_cli;
 	std::string			_host_serv;
@@ -48,7 +46,7 @@ class Client
 	~Client();
 
 	const std::string&	getUsername() const;
-	std::string&	getNickname();
+	std::string&		getNickname();
 	const int&			getSock_fd() const;
 	const time_t&		getTime_connection() const;
 	const time_t&		getTime_last_msg() const;
@@ -58,29 +56,27 @@ class Client
 	const std::string&	getHost_cli() const;
 	const std::string&	getHost_serv() const;
 	int					getRights(std::string chanName);
-	std::map<std::string, int>&	getMychannel();
 	std::string&		getFullName();
+	size_t				getSizeBuff() const;		
+
+	std::map<std::string, int>&	getMychannel();
 
 
-	size_t		getSizeBuff() const;		
-
-	int	setInput_buf(std::string buff);
+	int		setInput_buf(std::string buff);
 	void	setIs_auth(int level);
 	void	setNick(std::string &nick);
 	void	setUsername(std::string nick);
 	void	setRights(std::string chanName, int rights);
 	void	setFullName();
 
-	int verif_return();
+	int 	verif_return();
 	void	clearBuf();
 	int		sendMsg(const std::string &msg);
-	void	partAll();
 	int		getNumsChan();
 
 	void	addChan(std::string &chan);
 	bool	inChan(const std::string &chan);
-	static size_t nb_client;
-	void quit_channel(std::string chanName);
+	void	quit_channel(std::string chanName);
 
 };
 

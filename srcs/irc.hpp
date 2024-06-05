@@ -6,5 +6,4 @@
 #include <cstring>
 #include <csignal>
 
-void	sigint_handler();
 #endif
