@@ -145,31 +145,31 @@ void Bot::process_command(message_t msg, int sockfd)
 
 void Bot::loop_bot(int sockfd)
 {
-    srand(time(NULL));
-    char buffer[BUFSIZ + 1];
+	srand(time(NULL));
+	char buffer[BUFSIZ + 1];
 	
-    while (!g_signal)
+	while (!g_signal)
 	{
 		fd_set read_fds;
-        FD_ZERO(&read_fds);
-        FD_SET(sockfd, &read_fds);
+		FD_ZERO(&read_fds);
+		FD_SET(sockfd, &read_fds);
 
-        // Définir un délai d'attente pour la fonction select
-        struct timeval timeout;
-        timeout.tv_sec = 1; // 1 seconde
-        timeout.tv_usec = 0;
+		// Définir un délai d'attente pour la fonction select
+		struct timeval timeout;
+		timeout.tv_sec = 1;
+		timeout.tv_usec = 0;
 
-        // Utiliser select pour attendre sur la socket et le signal de contrôle C
-        int ret = select(sockfd + 1, &read_fds, NULL, NULL, &timeout);
-        if (ret == -1)
+		// Utiliser select pour attendre sur la socket et le signal de contrôle C
+		int ret = select(sockfd + 1, &read_fds, NULL, NULL, &timeout);
+		if (ret == -1)
 		{
-            perror("select");
-            break ;
-        }
+			perror("select");
+			break ;
+		}
 		else if (ret > 0)
 		{
-            // Des données sont disponibles sur la socket
-            if (FD_ISSET(sockfd, &read_fds))
+			// Des données sont disponibles sur la socket
+			if (FD_ISSET(sockfd, &read_fds))
 			{
 				memset(buffer, 0, SIZE_BUFF);
 				int n = recv(sockfd, buffer, SIZE_BUFF, 0);
@@ -184,7 +184,7 @@ void Bot::loop_bot(int sockfd)
 				}
 				if (msg.commande == "PRIVMSG")
 					process_command(msg, sockfd);
-    		}
+			}
 		}	
 	}
 }
@@ -224,58 +224,62 @@ std::string	init_passw(const std::string &pass)
 
 int main(int ac, char **av)
 {
-    int					port;
-    int					sockfd;
-    std::string			pass;
-    struct sockaddr_in	serv_addr;
-    struct hostent		*server = NULL;
+	int					port;
+	int					sockfd;
+	std::string			pass;
+	struct sockaddr_in	serv_addr;
+	struct hostent		*server = NULL;
 
-    if (ac != 3)
-    {
-        std::cerr << "Error: Utilisation: Bot <port <password>" << std::endl;
-        return (1);
-    }
+	if (ac != 3)
+	{
+		std::cerr << "Error: Utilisation: Bot <port <password>" << std::endl;
+		return (1);
+	}
 	std::signal(SIGINT, &sigint_handler);
 	std::signal(SIGQUIT, &sigint_handler);
-    try
+	try
 	{
 		pass = init_passw(av[2]);
-        port = init_port(av[1]);
+		port = init_port(av[1]);
 	}
 	catch(const char * e) {
 		std::cerr << e << '\n';
 		return (1);
 	}
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0)
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockfd < 0)
 	{
-        std::cerr << "ERROR opening socket" << std::endl;
-        return 1;
-    }
+		std::cerr << "ERROR opening socket" << std::endl;
+		return 1;
+	}
     server = gethostbyname(SERVER);
-    if (server == NULL)
-    {
-        std::cerr << "ERROR, no such host" << std::endl;
-        return 1;
-    }
-    memset(&serv_addr, 0, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    memcpy(&serv_addr.sin_addr.s_addr, server->h_addr, server->h_length);
-    serv_addr.sin_port = htons(port);
-
-    if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+	if (server == NULL)
 	{
-        std::cerr << "ERROR connecting" << std::endl;
-        return 1;
-    }
+		std::cerr << "ERROR, no such host" << std::endl;
+		return 1;
+	}
+	memset(&serv_addr, 0, sizeof(serv_addr));
+	serv_addr.sin_family = AF_INET;
+	memcpy(&serv_addr.sin_addr.s_addr, server->h_addr, server->h_length);
+	serv_addr.sin_port = htons(port);
+	if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+	{
+		std::cerr << "ERROR connecting" << std::endl;
+		return 1;
+	}
 	
 	Bot bot(pass);
 	send_command(sockfd, "PASS " + pass + " \r\n");
-    send_command(sockfd, "NICK " NICK "\r\n");
+	send_command(sockfd, "NICK " NICK "\r\n");
 	send_command(sockfd, "USER " USER "\r\n");
-
-    bot.loop_bot(sockfd);
-
-    close(sockfd);
-    return 0;
+	try
+	{
+		bot.loop_bot(sockfd);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+	close(sockfd);
+	return (0);
 }
