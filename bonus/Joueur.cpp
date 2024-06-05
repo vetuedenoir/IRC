@@ -51,8 +51,6 @@ int	Joueur::the_game(int guess)
 {
 	char buffer[SIZE_BUFF + 1];
 
-	std::cout << "je joue" << std::endl;
-
 	if (guess == _secret_number)
 	{
 		snprintf(buffer, SIZE_BUFF, "PRIVMSG %s :Congratulations! You guessed the number: %d in %d attempt(s) \r\n", _nick.c_str(), _secret_number, _nbcoup);

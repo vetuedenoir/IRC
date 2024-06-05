@@ -48,3 +48,11 @@ class Bot
 		void			process_command(message_t msg, int sockfd);
 };
 void			send_command(int sockfd, const std::string cmd);
+
+// /dcc send nick /chemin/vers/fichier
+
+// /set dcc_download_path /chemin/vers/le/dossier
+
+// /dcc get nick_of_sender 1
+
+// /dcc list

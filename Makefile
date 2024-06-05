@@ -43,15 +43,6 @@ bonus:	$(BONUS)
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
 
-# $(BONUS): $(OBJ_BONUS)
-# 	$(CXX) $(CXXFLAGS) -o $(BONUS) $(OBJS)
-
-# $(OBJDIR_BONUS)%.o: $(SRCS_BONUS)%.cpp | $(OBJDIR_BONUS)
-# 	$(CXX) $(CXXFLAGS) -o $(BONUS) $(OBJS)
-
-# $(BONUS_DIR):
-# 	mkdir -p $(BONUS_DIR)
-
 $(BONUS): $(OBJ_BONUS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 

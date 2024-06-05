@@ -6,7 +6,7 @@ bool	topic(Serveur *serveur, Client *client, std::vector<std::string> &arguments
 
 	if (client->getIs_auth() != COMPLET_AUTH)
 		return (0);
-	if (arguments.size() < 2)
+	if (arguments.size() < 1)
 		return (client->sendMsg(ERR_NEEDMOREPARAMS(client->getNickname(), "TOPIC")));
 	
 	std::string cchan_name = rcasemape(arguments[0]);
@@ -17,6 +17,13 @@ bool	topic(Serveur *serveur, Client *client, std::vector<std::string> &arguments
 	if (!client->inChan(cchan_name))
 		return (client->sendMsg(ERR_NOTONCHANNEL(client->getNickname(), channel->getName())));
 	
+	if (arguments.size() == 1)
+	{
+		if (channel->getTopic() == "")
+			return (client->sendMsg(RPL_NOTOPIC(client->getNickname(), channel->getName())));
+		else
+			return (client->sendMsg(RPL_TOPIC(client->getNickname(), channel->getName(), channel->getTopic())));
+	}
 	rights = client->getRights(cchan_name);
 	if (channel->isModeSet(TOPIC))
 	{

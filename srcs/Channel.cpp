@@ -192,10 +192,8 @@ bool	Channel::accepte_new_user(Client *client, const std::string &key)
 	}
 	if (isModeSet(LIMITE))
 	{
-		std::cout << "limite = " << _limite << "et j ai " << _my_clients.size() << " client " << std::endl;
 		if (_founder.second != NULL)
 		{
-			std::cout << " have a king" << std::endl;
 			if (_limite <= _my_clients.size() + 1)
 				return (client->sendMsg(ERR_CHANNELISFULL(client->getNickname(), _name)));
 		}
